@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+  <pre>
+문제1: 동전 문제¶
+지불해야 하는 값이 4720원 일 때 1원 50원 100원, 500원 동전으로 동전의 수가 가장 적게 지불하시오.
+- 가장 큰 동전부터 최대한 지불해야 하는 값을 채우는 방식으로 구현 가능
+- 탐욕 알고리즘으로 매순간 최적이라고 생각되는 경우를 선택하면 됨 
+ 
+ 
+문제2: 부분 배낭 문제 (Fractional Knapsack Problem)
+- 무게 제한이 k인 배낭에 최대 가치를 가지도록 물건을 넣는 문제
+- 각 물건은 무게(w)와 가치(v)로 표현될 수 있음
+- 물건은 쪼갤 수 있으므로 물건의 일부분이 배낭에 넣어질 수 있음, 그래서 Fractional Knapsack Problem 으로 부름
+- Fractional Knapsack Problem 의 반대로 물건을 쪼개서 넣을 수 없는 배낭 문제도 존재함 (0/1 Knapsack Problem 으로 부름)
+  </pre>
+  <img src="./img/knapsack.png" width="100%">
+   
+    <script>
+        //var coinList = [100, 50, 500, 1]
+        var coinList = [100, 50, 500, 10]
+        
+        function minCoinCount(targetValue, coinList) {
+            // 내림차순 정렬
+            coinList = coinList.sort(function(a, b){
+             return b - a   
+            })
+            
+            var totalCoinCount = 0
+            var detailList = []
+            
+            for(var i in coinList) {
+                var coinNum = parseInt(targetValue / coinList[i])
+                totalCoinCount += coinNum
+                targetValue -= coinNum * coinList[i]
+                detailList.push({
+                    coin: coinList[i],
+                    count: coinNum
+                })
+                
+            }
+            
+            return {
+                totalCoinCount: totalCoinCount,
+                detailList: detailList
+            }
+        }
+        
+        console.log(minCoinCount(4720, coinList))
+        
+        // ============== 문제 2 ===============
+        var dataList = [{
+            no: 1,
+            weight: 10,
+            value: 10
+        }, {
+            no: 2,
+            weight: 15,
+            value: 12
+        }, {
+            no: 3,
+            weight: 20,
+            value: 10
+        }, {
+            no: 4,
+            weight: 25,
+            value: 8
+        }, {
+            no: 5,
+            weight: 30,
+            value: 5
+        }]
+        
+        console.log(dataList)
+        
+        // capacity: 물건의 개수(용량)
+        function getMaxValueFromKnapsack(capacity, dataList) {
+            // 무게 대비 가치가 높은 순으로 내림차순 정렬
+            dataList.sort(function(a, b){
+                var valuePerWeightOfA = a.value / a.weight
+                var valuePerWeightOfB = b.value / b.weight
+//                a.wv = valuePerWeightOfA
+//                b.wv = valuePerWeightOfB
+                
+                return valuePerWeightOfB - valuePerWeightOfA
+            })
+            
+            var totalValue = 0
+            var detailList = []
+            
+            // debugger
+            for(var i in dataList) {
+                if(capacity - dataList[i].weight >= 0) {
+                    capacity -= dataList[i].weight // 가치가 높기 때문에 통째로 넣으면 됨 (위에 수행된 정렬에 의하면)
+                    totalValue += dataList[i].value // 물건의 가치를 추가
+                    detailList.push({
+                        data: dataList[i],
+                        count: 1
+                    })
+                } else {
+                    var fraction = capacity / dataList[i].weight
+                    totalValue += dataList[i].weight * fraction
+                    // console.log(totalValue)
+                    detailList.push({
+                        data: dataList[i],
+                        count: fraction
+                    })
+                    break // ** 이후 진행하지 않음
+                }
+            } 
+            
+            return {
+                totalValue: totalValue,
+                detailList: detailList
+            }
+        }
+        
+        console.log(getMaxValueFromKnapsack(30, dataList))
+        
+    </script>
+</body>
+</html>
