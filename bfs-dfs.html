@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+   <img src="./img/BFSDFS.png" width="100%">
+    <script>
+        var graph = {}
+
+        graph['A'] = ['B', 'C']
+        graph['B'] = ['A', 'D']
+        graph['C'] = ['A', 'G', 'H', 'I']
+        graph['D'] = ['B', 'E', 'F']
+        graph['E'] = ['D']
+        graph['F'] = ['D']
+        graph['G'] = ['C']
+        graph['H'] = ['C']
+        graph['I'] = ['C', 'J']
+        graph['J'] = ['I']
+        
+        console.log(graph)
+        
+        
+        function bfs(graph, first) {
+            // 둘 다 큐
+            var visited = [], needVisit = []
+            needVisit.push(first)
+            
+            while(needVisit.length != 0) {
+                var node = needVisit.shift()
+                if(visited.indexOf(node) == -1) {
+                    visited.push(node)
+                    needVisit = needVisit.concat(graph[node])
+                }
+                
+            }
+            
+            return visited
+        }
+        
+        function dfs(graph, first) {
+            // needVisit 은 스택
+            var visited = [], needVisit = []
+            needVisit.push(first)
+            
+            while(needVisit.length != 0) {
+                var node = needVisit.pop()
+                if(visited.indexOf(node) == -1) {
+                    visited.push(node)
+                    needVisit = needVisit.concat(graph[node])
+                    
+                }
+            }
+            
+            return visited
+        }
+        
+        console.log(bfs(graph, 'A'))
+        console.log(dfs(graph, 'A'))
+    </script>
+</body>
+</html>

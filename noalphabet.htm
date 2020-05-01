@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+
+<body>
+    <input type="text" id="addr-field">
+    <div id="result-area"></div>
+    <script>
+        var addrf = document.getElementById("addr-field")
+        var resultArea = document.getElementById("result-area")
+
+        var regexAddr = /^.*?[A-Za-z].*?$/
+
+        addrf.onkeyup = function() {
+            if (!regexAddr.test(addrf.value)) {
+                resultArea.innerHTML = ""
+            } else if (addrf.value == '') {
+                resultArea.innerHTML = ""
+            } else if (regexAddr.test(addrf.value)) {
+                resultArea.innerHTML = "영문자는 입력하실 수 없습니다."
+                resultArea.style.color = "red"
+            }
+        }
+
+    </script>
+</body>
+
+</html>

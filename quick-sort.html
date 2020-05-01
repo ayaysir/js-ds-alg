@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+//        var arr = [4, 1, 2, 11, 5, 7, 3]
+//        console.log(arr.slice(0, 4))
+//        var pivot = arr[0]
+//        var leftArr = [], rightArr = []
+//        for(var i in arr){
+//            if(arr[i] < pivot){
+//                leftArr.push(arr[i])
+//            } else {
+//                rightArr.push(arr[i])
+//            }
+//        }
+//        console.log(leftArr, rightArr)
+        
+        var arr1 = [1, 6]
+        var arr2 = ["C", "E"]
+        var arr3 = [65, 31.2, "A"]
+        
+        console.log(
+            arr1.concat(arr2),
+            arr2.concat(arr3),
+            arr1.concat(arr2, arr3),
+            arr1.concat(arr2, ["FX"], arr3)
+        )
+        
+        function numberSampler(maxNum, size) {
+            if(maxNum < size){
+                alert("size는 maxNum보다 작거나 같아야 합니다.")
+                return false
+            }
+            var arr = []
+            for(var i = 0; i < maxNum; i++){
+                arr[i] = parseInt(i) + 1
+            }
+
+            // Shuffling
+            for(var i = 0; i < 10000; i++){
+                var tempPos = parseInt(Math.random() * arr.length)
+                var tempEl = arr[tempPos]
+                arr[tempPos] = arr[0]
+                arr[0] = tempEl
+            }
+            // 배열 자르기 0~ 19(size 직전까지)
+            return arr.slice(0, size)
+        }
+        
+        console.log(numberSampler(100, 20))
+        
+        function quickSort(arr) {
+            if(arr.length <= 1) {
+                return arr
+            }
+            
+            var leftArr = [], rightArr = []
+            var pivot = arr[0]
+            
+            for(var i = 1; i < arr.length; i++) {
+                if(arr[i] <= pivot) {
+                    leftArr.push(arr[i])
+                } else {
+                    rightArr.push(arr[i])
+                }
+            }
+            
+            // 배열 합치기
+            // Python 3: quickSort(leftArr) + [pivot] + quickSort(rightArr)
+            return quickSort(leftArr).concat([pivot], quickSort(rightArr)) 
+            
+        }
+        
+        function insertSort(arr) {
+            for(var i = 0; i < arr.length - 1; i++) {
+                for(var j = i + 1; j > 0; j--) {
+                    if(arr[j-1] > arr[j]){
+                        var temp = arr[j]
+                        arr[j] = arr[j-1]
+                        arr[j-1] = temp
+                    }
+                }
+            }
+            return arr
+        }
+        var unsortedArr = numberSampler(100, 20)
+        console.log(unsortedArr, quickSort(unsortedArr))
+        console.log(unsortedArr, insertSort(unsortedArr))
+        
+        var manyNumbers = numberSampler(100000, 100000)
+        
+        var qStart = new Date().getTime()
+        console.log(quickSort(manyNumbers))
+        var qEnd = new Date().getTime()
+        console.log("quickSort:", qEnd - qStart)
+                
+//        var iStart = new Date().getTime()
+//        console.log(insertSort(manyNumbers))
+//        var iEnd = new Date().getTime()
+//        console.log("insertSort:", iEnd - iStart)
+        
+        var numbers = numberSampler(100, 10)
+        // numbers = quickSort(numbers)
+        numbers.sort(function(a, b){
+            return a - b
+        })
+        console.log(numbers)
+        
+        function binarySearch(num, arr) {
+            if(arr.length == 1 && arr[0] === num) {
+                return true
+            }
+            else if(arr.length == 1 && arr[0] !== num) {
+                return false
+            }
+            else if(arr.length == 0) {
+                return false
+            }
+            
+            var mid = parseInt(arr.length / 2)
+            // console.log(mid, arr[mid])
+            
+            if(arr[mid] === num) {
+                return true
+            } else {
+                
+                //console.log(arr.slice(mid, arr.length), arr.slice(0, mid))
+                if(arr[mid] < num) {
+                    return binarySearch(num, arr.slice(mid + 1, arr.length))
+                } else {
+                    return binarySearch(num, arr.slice(0, mid))
+                }
+            }
+            
+        }
+        
+        for(var i = 11; i <= 20; i++) {
+            
+            console.log(i, binarySearch(i, numbers))
+        }
+        
+        
+    </script>
+</body>
+</html>

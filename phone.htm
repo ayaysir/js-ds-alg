@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+   <input type="text" id="fd" placeholder="핸드폰 번호만 입력하세요. (하이픈 포함)">
+   <button id='btn1'>확인</button>
+    <span id=result></span>
+    <script>
+        var fd = document.getElementById('fd')
+        
+        var regexPhone = /^01[01679]-[0-9]{3,4}-[0-9]{4}$/
+        
+        document.getElementById('btn1').onclick = function() {
+            document.getElementById('result').innerHTML = regexPhone.test(fd.value)
+        }
+        
+        fd.onkeydown = function() {
+            if(event.keyCode == 13)
+                document.getElementById('result').innerHTML = regexPhone.test(fd.value)
+        }
+            
+            
+    </script>
+</body>
+</html>
