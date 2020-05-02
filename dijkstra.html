@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+
+<body>
+    <img src="https://www.fun-coding.org/00_Images/dijkstra.png" width="100%">
+    <script src="js/heap.js">
+    </script>
+    <script>
+        var graph1 = {
+            'A': {
+                'B': 8,
+                'C': 1,
+                'D': 2
+            },
+            'B': {},
+            'C': {
+                'B': 5,
+                'D': 2
+            },
+            'D': {
+                'E': 3,
+                'F': 5
+            },
+            'E': {
+                'F': 1
+            },
+            'F': {
+                'A': 5
+            }
+        }
+
+        function dijkstra1(graph, start) {
+
+            var distances = {}
+            for (var key in graph) {
+                distances[key] = Infinity
+            }
+            distances[start] = 0
+            var priorityQueue = []
+
+            // 임시 - 최소힙 기능
+            var pqPush = function(dist, node) {
+                priorityQueue.push({
+                    dist: dist,
+                    node: node
+                })
+
+                // 내림차순 정렬하면 나중에 pop()했을 때 최소 거리를 반환함
+                priorityQueue.sort(function(a, b) {
+                    return b.dist - a.dist
+                })
+            }
+
+            pqPush(distances["A"], "A")
+
+            // console.log(distances, priorityQueue)
+
+            while (priorityQueue.length != 0) {
+                var popper = priorityQueue.pop()
+                // console.log("popper", popper)
+                // 최소 거리값 뽑기
+                var currentDist = popper.dist
+                var currentNode = popper.node
+
+            // console.log("distances[currentNode] < currentDist", distances[currentNode] < currentDist)
+                if (distances[currentNode] < currentDist) {
+                    continue
+                }
+                // debugger
+                // ** currentNode 안에 있는 정보에 대해서만 탐색
+                for (var adj in graph[currentNode]) {
+                    var weight = graph[currentNode][adj]
+                    var dist = currentDist + weight
+                    if (dist < distances[adj]) {
+                        distances[adj] = dist
+                        pqPush(dist, adj)
+                    }
+                }
+
+
+            }
+
+            return distances
+
+        }
+
+        console.log(dijkstra1(graph1, "A"))
+    </script>
+</body></html>
