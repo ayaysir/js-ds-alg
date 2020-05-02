@@ -61,16 +61,15 @@
 
             while (priorityQueue.length != 0) {
                 var popper = priorityQueue.pop()
-                // console.log("popper", popper)
                 // 최소 거리값 뽑기
                 var currentDist = popper.dist
                 var currentNode = popper.node
 
-            // console.log("distances[currentNode] < currentDist", distances[currentNode] < currentDist)
+                // console.log("distances[currentNode] < currentDist", distances[currentNode] < currentDist)
                 if (distances[currentNode] < currentDist) {
                     continue
                 }
-                // debugger
+                
                 // ** currentNode 안에 있는 정보에 대해서만 탐색
                 for (var adj in graph[currentNode]) {
                     var weight = graph[currentNode][adj]
@@ -80,14 +79,91 @@
                         pqPush(dist, adj)
                     }
                 }
-
-
             }
 
             return distances
 
         }
 
+        function dijkstra2(graph, start, end) {
+            // # 시작 정점에서 각 정점까지의 거리를 저장할 딕셔너리를 생성하고, 무한대(inf)로 초기화합니다.
+            var distances = {}
+            for (var key in graph) {
+                distances[key] = {
+                    dist: Infinity,
+                    node: start
+                }
+            }
+
+            // # 그래프의 시작 정점의 거리는 0으로 초기화 해줌
+            distances[start] = {
+                dist: 0,
+                node: start
+            }
+            // # 모든 정점이 저장될 큐를 생성합니다.
+            var priorityQueue = []
+
+            // 임시 - 최소힙 기능
+            var pqPush = function(dist, node) {
+                priorityQueue.push({
+                    dist: dist,
+                    node: node
+                })
+
+                // 내림차순 정렬하면 나중에 pop()했을 때 최소 거리를 반환함
+                priorityQueue.sort(function(a, b) {
+                    return b.dist - a.dist
+                })
+            }
+            
+            //  # 그래프의 시작 정점과 시작 정점의 거리(0)을 최소힙에 넣어줌
+            pqPush(distances["A"].dist, "A")
+
+            while (priorityQueue.length != 0) {
+                var popper = priorityQueue.pop()
+                // console.log("popper", popper)
+                // 최소 거리값 뽑기
+                var currentDist = popper.dist
+                var currentNode = popper.node
+
+                // 더 짧은 경로가 있다면 무시
+                if (distances[currentNode] < currentDist) {
+                    continue
+                }
+               
+                // ** currentNode 안에 있는 정보에 대해서만 탐색
+                for (var adj in graph[currentNode]) {
+                    var weight = graph[currentNode][adj]
+                    var dist = currentDist + weight
+                    // # 만약 시작 정점에서 인접 정점으로 바로 가는 것보다 현재 정점을 통해 가는 것이 더 가까울 경우에는 거리를 업데이트합니다.
+                    if (dist < distances[adj].dist) {
+                        distances[adj] = {
+                            dist: dist,
+                            node: currentNode
+                        }
+                        pqPush(dist, adj)
+                    }
+                }
+            }
+            
+            // 경로를 배열에 삽입
+            // Array.unshift(): 요소를 배열 맨 앞에 삽입하고 길이를 반환
+            var path = end
+            var pathArr = [path]
+            while(distances[path].node != start) {
+                pathArr.unshift(distances[path].node)
+                path = distances[path].node
+            }
+            pathArr.unshift(start)
+            
+            return {
+                path: pathArr,
+                distances: distances
+            }
+
+        }
+
         console.log(dijkstra1(graph1, "A"))
+        console.log(dijkstra2(graph1, "A", "F"))
     </script>
 </body></html>
