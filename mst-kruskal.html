@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+
+<body>
+    <img src="https://www.fun-coding.org/00_Images/kruscal_internal1.png" width="100%">
+    <img src="https://www.fun-coding.org/00_Images/kruscal_internal2.png" width="100%">
+    <script>
+        var DEBUG = true
+        
+        var graph = {
+            'vertices': ['A', 'B', 'C', 'D', 'E', 'F', 'G'],
+            'edges': [
+                [7, 'A', 'B'],
+                [5, 'A', 'D'],
+                [7, 'B', 'A'],
+                [8, 'B', 'C'],
+                [9, 'B', 'D'],
+                [7, 'B', 'E'],
+                [8, 'C', 'B'],
+                [5, 'C', 'E'],
+                [5, 'D', 'A'],
+                [9, 'D', 'B'],
+                [7, 'D', 'E'],
+                [6, 'D', 'F'],
+                [7, 'E', 'B'],
+                [5, 'E', 'C'],
+                [7, 'E', 'D'],
+                [8, 'E', 'F'],
+                [9, 'E', 'G'],
+                [6, 'F', 'D'],
+                [8, 'F', 'E'],
+                [11, 'F', 'G'],
+                [9, 'G', 'E'],
+                [11, 'G', 'F']
+            ]
+        }
+
+        function kruskal(graph) {
+            var parent = {}
+            var rank = {}
+
+            // 임시 - edge 정렬
+            var sortEdges = function(edges) {
+
+                edges.sort(function(a, b) {
+                    return a[2] - b[2]
+                })
+
+                edges.sort(function(a, b) {
+                    return a[1] - b[1]
+                })
+
+                edges.sort(function(a, b) {
+                    return a[0] - b[0]
+                })
+
+                return edges
+            }
+
+            var find = function(node) {
+                // # path compression 기법
+                if (parent[node] != node) {
+                    parent[node] = find(parent[node])
+                }
+                return parent[node]
+            }
+
+            var union = function(nodeStart, nodeEnd) {
+                var root1 = find(nodeStart)
+                var root2 = find(nodeEnd)
+
+                DEBUG && console.log("rr", root1, root2, rank[root1], rank[root2])
+
+                // # union-by-rank 기법
+                if (rank[root1] > rank[root2]) {
+                    parent[root2] = root1
+                } else {
+                    parent[root1] = root2
+                    if (rank[root1] == rank[root2]) {
+                        rank[root2] += 1
+                    }
+                }
+            }
+
+
+
+            var main = function(graph) {
+                var mst = []
+
+                // # 1. 초기화
+                for (var i in graph.vertices) {
+                    var node = graph.vertices[i]
+                    parent[node] = node
+                    rank[node] = 0
+                }
+
+                // # 2. 간선 weight 기반 sorting
+                var edges = graph.edges
+                edges = sortEdges(edges)
+
+                DEBUG && console.log(parent, rank)
+
+                // # 3. 간선 연결 (사이클 없는)
+                for (var i in edges) {
+                    var weight = edges[i][0]
+                    var nodeStart = edges[i][1]
+                    var nodeEnd = edges[i][2]
+
+                    DEBUG && console.log(weight, nodeStart, nodeEnd)
+                    DEBUG && console.log(find(nodeStart), find(nodeEnd))
+
+                    if (find(nodeStart) != find(nodeEnd)) {
+                        union(nodeStart, nodeEnd)
+                        mst.push(edges[i])
+                    }
+                }
+
+                return mst
+            }
+
+            return main(graph)
+        }
+
+        console.log(kruskal(graph))
+    </script>
+</body></html>
