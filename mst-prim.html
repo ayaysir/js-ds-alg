@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+
+<body>
+    <img src="https://www.fun-coding.org/00_Images/prim1.png" width="100%">
+    <img src="https://www.fun-coding.org/00_Images/prim2.png" width="100%">
+    <img src="https://www.fun-coding.org/00_Images/prim3.png" width="100%">
+
+    <script>
+        var DEBUG = true
+
+        var edges = [
+            [7, 'A', 'B'],
+            [5, 'A', 'D'],
+            [8, 'B', 'C'],
+            [9, 'B', 'D'],
+            [7, 'B', 'E'],
+            [5, 'C', 'E'],
+            [7, 'D', 'E'],
+            [6, 'D', 'F'],
+            [8, 'E', 'F'],
+            [9, 'E', 'G'],
+            [11, 'F', 'G']
+        ]
+
+        function heapify(edges) {
+            edges.sort(function(a, b) {
+                return b[2] > a[2] ? 1 : -1
+            })
+
+            edges.sort(function(a, b) {
+                return b[1] > a[1] ? 1 : -1
+            })
+
+            edges.sort(function(a, b) {
+                return b[0] - a[0]
+            })
+        }
+
+        //        var obj = {
+        //            "A": null,
+        //            "C": undefined,
+        //            "D": 0,
+        //            "E": 1
+        //        }
+        //        console.log(obj["A"], !obj["A"], obj["B"], !obj["B"], obj["C"], !obj["C"], obj["D"], !obj["D"], obj["E"], !obj["E"])
+
+
+        function prim(edges, startNode) {
+            var mst = []
+            var adjEdges = {}
+
+            for (var i in edges) {
+                var weight = edges[i][0]
+                var node1 = edges[i][1]
+                var node2 = edges[i][2]
+                DEBUG && console.log(weight, node1, node2)
+
+                if (!adjEdges[node1]) {
+                    adjEdges[node1] = []
+                }
+                if (!adjEdges[node2]) {
+                    adjEdges[node2] = []
+                }
+                
+                adjEdges[node1].push([weight, node1, node2])
+                adjEdges[node2].push([weight, node2, node1])
+            }
+
+            // Set: key만 사용
+            var connectedNodes = {}
+            connectedNodes[startNode] = 1 // 키 할당
+            var candidateEdgeList = adjEdges[startNode]
+            heapify(candidateEdgeList)
+            DEBUG && console.log(adjEdges, adjEdges[startNode], candidateEdgeList)
+
+            while (candidateEdgeList.length != 0) {
+                var popper = candidateEdgeList.pop() // heap-pop
+                var weight = popper[0]
+                var node1 = popper[1]
+                var node2 = popper[2]
+
+                DEBUG && console.log(popper, !connectedNodes[node2])
+
+                if (!connectedNodes[node2]) {
+                    connectedNodes[node2] = 1 // 키 할당
+                    mst.push([weight, node1, node2])
+                }
+
+                for (var key in adjEdges[node2]) {
+                    var edge2 = adjEdges[node2][key][2]
+                    DEBUG && console.log(edge2)
+                    if (!connectedNodes[edge2]) {
+                        // heap-push
+                        candidateEdgeList.push(adjEdges[node2][key])
+                        heapify(candidateEdgeList)
+                    }
+                }
+            }
+
+            return mst
+
+        }
+
+        console.log(prim(edges, "A"))
+    </script>
+</body></html>
