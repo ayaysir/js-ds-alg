@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+
+<body>
+   <img src="https://www.fun-coding.org/00_Images/nqueen.png" width="100%">
+    <script>
+        
+        var DEBUG = true
+        
+        function nQueens(n) {
+
+            var isAvailable = function(candidate, currentCol) {
+                var currentRow = candidate.length
+                
+                for (var qRow = 0; qRow < currentRow; qRow++) {
+                    var con1 = candidate[qRow] == currentCol
+                    var con2 = Math.abs(candidate[qRow] - currentCol) == currentRow - qRow
+                    if (con1 || con2) {
+                        return false
+                    }
+                }
+                return true
+            }
+
+            var dfs = function(n, currentRow, currentCandidate, finalResult) {
+                if (currentRow == n) {
+                    finalResult.push(currentCandidate.slice(0)) // shallow copy
+                    return
+                }
+
+                for (var candidateCol = 0; candidateCol < n; candidateCol++) {
+                    
+                    if (isAvailable(currentCandidate, candidateCol)) {
+                        currentCandidate.push(candidateCol)
+                        dfs(n, currentRow + 1, currentCandidate, finalResult)
+                        currentCandidate.pop()
+                    }
+                }
+            }
+
+            var main = function(n) {
+
+                var finalResult = []
+                dfs(n, 0, [], finalResult)
+                return finalResult
+            }
+
+            return main(n)
+        }
+        
+        console.log(nQueens(4))
+    </script>
+</body></html>

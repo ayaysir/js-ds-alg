@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+
+<body>
+    <table>
+        <tr>
+            <th>el</th>
+            <th>count</th>
+        </tr>
+        <tr>
+            <td>4</td>
+            <td>5</td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td>5</td>
+        </tr>
+        <tr>
+            <td>6</td>
+            <td>7</td>
+        </tr>
+        <tr>
+            <td>8</td>
+            <td>9</td>
+        </tr>
+        <tr>
+            <td>7</td>
+            <td>9</td>
+        </tr>
+        <tr>
+            <td>5</td>
+            <td>9</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>9</td>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td>9</td>
+        </tr>
+    </table>
+    https://www.acmicpc.net/problem/1874
+    <script>
+        const DEBUG = false
+
+        const input1 = `8
+4
+3
+6
+8
+7
+5
+2
+1`
+        const input2 = `5
+1
+2
+5
+3
+4`
+
+
+
+        function stackFailed(inputStr) {
+            const arr = inputStr.split(/\n/).slice(1)
+            arr.reverse()
+
+            DEBUG && console.log(arr)
+
+            const outArr = []
+            const poppedStack = []
+
+            let i = 1
+            let pointer = 0
+            while (pointer < arr.length) {
+
+                if (i >= 10000) {
+                    console.error("x")
+                    break
+                }
+
+                const target = parseInt(arr[pointer])
+                DEBUG && console.log(i == target, i, target)
+                if (i == target) {
+                    outArr.push("+")
+                    i++
+                    pointer++
+                } else if (i < target) {
+                    for (let j = i; j < target; j++) {
+                        outArr.push("+")
+                    }
+                    for (let j = i; j < target; j++) {
+                        outArr.push("-")
+                        DEBUG && console.log("j", j)
+                        poppedStack.push(j)
+                    }
+                    i = target
+                } else {
+                    DEBUG && console.log("recursive", poppedStack)
+                    break
+                }
+            }
+
+            return outArr
+
+        }
+
+        function stackAns(inputStr) {
+            const arr = inputStr.split(/\n/).slice(1)
+
+            const stack = []
+            const result = []
+            let count = 1
+
+            // 데이터 개수만큼 반복
+            for (let el of arr) {
+                // count가 el 보다 크면 반복하지 않음 (예: 3)
+                while (count <= el) {
+                    stack.push(count++)
+                    result.push("+")
+                }
+
+                DEBUG && console.log(stack[stack.length - 1], el)
+                if (stack[stack.length - 1] == el) {
+                    stack.pop()
+                    result.push("-")
+                } else {
+                    return "NO"
+                }
+            }
+
+            return result.join("\n")
+
+        }
+
+        console.log(stackFailed(input1))
+        console.log(stackAns(input1))
+        console.log(stackAns(input2))
+    </script>
+</body></html>

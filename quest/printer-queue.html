@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        const DEBUG = false
+        const input = `3
+1 0
+5
+4 2
+1 2 3 4
+6 0
+1 1 9 1 1 1`
+
+        //        function printerQueueFailed(inputStr) {
+        //            const arr = (inputStr.split(/\n/))
+        //            DEBUG && console.log(arr)
+        //            const cases = []
+        //            const outArr = []
+        //
+        //            for (let i = 1; i <= arr[0]; i++) {
+        //                const splArr = arr[2 * i - 1].split(/ /)
+        //                const obj = {
+        //                    docCount: parseInt(splArr[0]),
+        //                    testNum: parseInt(splArr[1]),
+        //                    docList: arr[2 * i].split(/ /)
+        //                }
+        //                cases.push(obj)
+        //            }
+        //            DEBUG && console.log(cases)
+        //
+        //            for (let obj of cases) {
+        //                const targetDoc = obj.docList[obj.testNum]
+        //
+        //                obj.docList.sort((a, b) => {
+        //                    return parseInt(b) - parseInt(a)
+        //                })
+        //                outArr.push(obj.docList.indexOf(targetDoc) + 1)
+        //
+        //
+        //            }
+        //            return outArr.join("\n")
+        //        }
+
+        function printerQueueAns(inputStr) {
+            const arr = (inputStr.split(/\n/))
+            DEBUG && console.log(arr)
+            const cases = []
+            const outArr = []
+
+            for (let i = 1; i <= arr[0]; i++) {
+                const splArr = arr[2 * i - 1].split(/ /)
+                const obj = {
+                    docCount: parseInt(splArr[0]),
+                    testNum: parseInt(splArr[1]),
+                    docList: arr[2 * i].split(/ /)
+                }
+                for (let j = 0; j < obj.docList.length; j++) {
+                    obj.docList[j] = {
+                        priority: parseInt(obj.docList[j]),
+                        index: j
+                    }
+                }
+                cases.push(obj)
+            }
+            DEBUG && console.log(cases)
+
+            const findPriorityMax = docList => {
+                let max = -Infinity
+                for (let el of docList) {
+                    if (el.priority > max) {
+                        max = el.priority
+                    }
+                }
+                return max
+            }
+
+            for (let obj of cases) {
+
+
+                let wi = 0
+                let count = 0
+                while (true) {
+                    wi++
+                    if (wi >= 10000) {
+                        console.error("infinity loop")
+                        break
+                    }
+
+                    // max를 안에 지정해야 함 -> 배열을 회전할 때마다 max 값이 변하므로
+                    const max = findPriorityMax(obj.docList)
+
+                    const firstEl = obj.docList.shift()
+                    // console.log("fe", firstEl, max, firstEl.priority == max)
+                    if (firstEl.priority == max) {
+                        count++
+                        if (firstEl.index == obj.testNum) {
+                            outArr.push(count)
+                            break
+                        } // else인 경우 그냥 날려보냄
+                    } else {
+                        obj.docList.push(firstEl)
+                    }
+                }
+
+            }
+            
+            return outArr
+        }
+        
+        // console.log(printerQueueFailed(input))
+        console.log(printerQueueAns(input))
+    </script>
+</body></html>

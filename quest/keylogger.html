@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+
+<body>
+    https://www.acmicpc.net/problem/5397
+    <img src="./../img/stack.jpeg" width="100%">
+    <script>
+        const DEBUG = true
+
+        const input = `2
+<<BP<A>>Cd-
+ThIsIsS3Cr3t
+A<<C>D<<<<<E`
+
+        function keylogger(inputStr) {
+            const split = inputStr.split(/\n/)
+            const caseCount = split[0]
+            const cases = split.slice(1)
+            const resultArr = []
+
+            for (let eachCase of cases) {
+                const stack = []
+                const strArr = eachCase.split("")
+
+                let outStrArr = []
+
+                for (let c of strArr) {
+                    DEBUG && console.log(c)
+                    if (c == "<") {
+                        // undefined가 push되는 현상 방지
+                        const popped = outStrArr.pop()
+                        popped ? stack.push(popped) : null
+                    } else if (c == ">") {
+                        const popped = stack.pop()
+                        popped ? outStrArr.push(popped) : null
+                    } else if (c == "-") {
+                        outStrArr.pop()
+                    } else {
+                        outStrArr.push(c)
+                    }
+                    DEBUG && console.log(stack, outStrArr)
+
+                }
+                // stack 역방향으로 한 뒤 붙이기
+                resultArr.push(outStrArr.join('') + stack.reverse().join(''))
+            }
+            return resultArr
+
+        }
+
+
+        console.log(keylogger(input))
+    </script>
+</body></html>
