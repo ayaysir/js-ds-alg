@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+
+<body>
+    https://www.acmicpc.net/problem/1920
+    <script src="./../js/sha256.js"></script>
+    <script>
+        const DEBUG = true
+        
+        const input = `5
+4 1 5 2 3
+5
+1 3 7 9 5`
+
+        function findNum(inputStr) {
+            const arr = inputStr.split(/\n/)
+            const refArr = arr[1].split(/ /)
+            const findArr = arr[3].split(/ /)
+            const outArr = []
+
+            const refObj = {}
+            refArr.forEach((el, n) => {
+                refObj[parseInt(el)] = true
+            })
+
+            DEBUG && console.log(refObj)
+
+            for (let el of findArr) {
+                refObj[parseInt(el)] ? outArr.push(1) : outArr.push(0)
+            }
+
+            return outArr.join("\n")
+
+
+        }
+
+        function findNumAdv(inputStr) {
+            const arr = inputStr.split(/\n/)
+            const refArr = arr[1].split(/ /)
+            const findArr = arr[3].split(/ /)
+            const outArr = []
+
+            // Set 자료형 사용 (ES6)
+            const refSet = new Set(refArr)
+            DEBUG && console.log(refSet)
+
+            for (let el of findArr) {
+                refSet.has(el) ? outArr.push(1) : outArr.push(0)
+            }
+
+            return outArr.join("\n")
+
+        }
+
+
+
+        console.log(findNum(input))
+        console.log(findNumAdv(input))
+    </script>
+</body></html>

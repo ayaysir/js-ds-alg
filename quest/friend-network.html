@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        const input = `2
+3
+Fred Barney
+Barney Betty
+Betty Wilma
+3
+Fred Barney
+Betty Wilma
+Barney Betty`
+
+        function friendNetwork(inputStr) {
+            const arr = inputStr.split(/\n/)
+            const caseCount = parseInt(arr[0])
+            const cases = []
+            const outArr = []
+            for (let i = 0; i < caseCount; i++) {
+
+                const friendCount = parseInt(arr[i * 4 + 1])
+
+                const friendSet = new Set()
+
+                let count = 2
+
+                for (let j = 0; j < friendCount; j++) {
+                    arr[i * 4 + 2 + j].split(/ /).forEach(item => {
+                        if (friendSet.has(item)) {
+                            count++
+                        } else {
+                            friendSet.add(item)
+                        }
+                    })
+                    outArr.push(count)
+                }
+
+                // console.log(friendSet)
+            }
+
+            return outArr.join("\n")
+        }
+
+        // union-find 알고리즘
+
+        function friendNetworkAnswer(inputStr) {
+            const arr = inputStr.split(/\n/)
+            const caseCount = parseInt(arr[0])
+            const cases = []
+            const outArr = []
+
+            let parentObj = {},
+                numberObj = {}
+
+            const find = x => {
+                if (x == parentObj[x]) {
+                    return x
+                } else {
+                    const p = find(parentObj[x])
+                    parentObj[x] = p
+                    return parentObj[x]
+                }
+            }
+
+            const union = (personX, personY) => {
+                
+                personX = find(personX)
+                personY = find(personY)
+
+                if (personX != personY) {
+                    parentObj[personY] = personX
+                    numberObj[personX] += numberObj[personY]
+                }
+            }
+
+            for (let i = 0; i < caseCount; i++) {
+                
+                parentObj = {},
+                numberObj = {}
+
+                const friendCount = parseInt(arr[i * 4 + 1])
+
+                for (let j = 0; j < friendCount; j++) {
+                    const twoPeople = arr[i * 4 + 2 + j].split(/ /)
+                    const personX = twoPeople[0]
+                    const personY = twoPeople[1]
+                    if (!parentObj[personX]) {
+                        parentObj[personX] = personX
+                        numberObj[personX] = 1
+                    }
+                    if (!parentObj[personY]) {
+                        parentObj[personY] = personY
+                        numberObj[personY] = 1
+                    }
+                    union(personX, personY)
+                    // console.log("e", numberObj[find(person1)])
+                    outArr.push(numberObj[find(personX)])
+
+                }
+
+                // console.log(parentObj, numberObj)
+            }
+
+            return outArr.join("\n")
+        }
+
+        console.log(friendNetwork(input))
+        console.log(friendNetworkAnswer(input))
+    </script>
+</body></html>
