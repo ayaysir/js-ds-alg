@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+    https://www.acmicpc.net/problem/2750
+    https://www.acmicpc.net/problem/1427
+    <script>
+        const input = `5
+5
+2
+3
+4
+1`
+        
+        const input2 = `2143`
+        
+        // 배열은 주소를 참조하므로 별도 리턴 없어도 알아서 바뀜
+        function swap(arr, idx1, idx2) {
+            const temp = arr[idx1]
+            arr[idx1] = arr[idx2]
+            arr[idx2] = temp
+        }
+        
+        // 데이터 개수 1000개 이하 > 기본 알고리즘
+        function bubbleSort(inputStr) {
+            const arr = inputStr.split(/\n/)
+            const inputLength = arr[0]
+            const nums = arr.slice(1)
+            
+            for(let i = 0; i < inputLength - 1; i++) {
+                for(let j = 1; j < inputLength; j++) {
+                    if(nums[j] < nums[j-1]) {
+                        swap(nums, j, j-1)
+                    }
+                }
+            }
+            
+            return nums.join("\n")
+        }
+        
+        function selectionSort(inputStr) {
+            const arr = inputStr.split(/\n/)
+            const inputLength = arr[0]
+            const nums = arr.slice(1)
+            
+            for(let i = 0; i < inputLength; i++) {
+                let minIndex = i
+                for(let j = i + 1; j < inputLength; j++) {
+                    if(nums[j] < nums[minIndex]) {
+                        minIndex = j
+                    }
+                }
+                // console.log(i, minIndex)
+                swap(nums, i, minIndex)
+            }
+            
+            return nums.join("\n")
+        }
+        
+        function sortInside(inputStr) {
+            const arr = inputStr.split('')
+            arr.sort((a, b) => {
+                return parseInt(b) - parseInt(a)
+            })
+            return arr.join('')
+        }
+        
+        console.log(bubbleSort(input))
+        console.log(selectionSort(input))
+        console.log(sortInside(input2))
+    </script>
+</body>
+</html>

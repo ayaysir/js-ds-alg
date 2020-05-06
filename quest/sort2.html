@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+   https://www.acmicpc.net/problem/10814
+   https://www.acmicpc.net/problem/11650
+   https://www.acmicpc.net/problem/10989
+    <script>
+        const input1 = `3
+21 Junkyu
+21 Dohyun
+20 Sunyoung`
+        
+        const input2 = `5
+3 4
+1 1
+1 -1
+2 2
+3 3`
+        const input3 = `10
+5
+2
+3
+1
+4
+2
+3
+5
+1
+7`
+        
+        function sortByAge(inputStr) {
+            const arr = inputStr.split(/\n/)
+            const dataLength = arr[0]
+            const list = []
+            arr.slice(1).forEach((e, n) => {
+                const each = e.split(/ /)
+                list.push([parseInt(each[0]), each[1]])
+            })
+            list.sort((a, b) => {
+                return a[0] - b[0]
+            })
+            
+            for(let i in list) {
+                list[i] = list[i].join(' ')
+            }
+            return list.join('\n')
+        }
+        
+        function sortCoords(inputStr) {
+            const arr = inputStr.split(/\n/)
+            const dataLength = arr[0]
+            const list = []
+            arr.slice(1).forEach((e, n) => {
+                const each = e.split(/ /)
+                list.push([parseInt(each[0]), each[1]])
+            })
+            
+            list.sort((a, b) => {
+                return a[1] - b[1]
+            })
+            list.sort((a, b) => {
+                return a[0] - b[0]
+            })
+            
+            for(let i in list) {
+                list[i] = list[i].join(' ')
+            }
+            return list.join('\n')
+        }
+        
+        // 데이터 개수 최대 천만개
+        // 수의 범위 1 ~ 10000 
+        // 계수 정렬(counting sort) 이용
+        function countingSort(inputStr) {
+            const arr = inputStr.split(/\n/)
+            const dataLength = arr[0]
+            const list = arr.slice(1)
+            
+//            sort((a, b) => {
+//                return parseInt(a) - parseInt(b)
+//            })
+            
+            const countingArr = []
+            for(let i = 0; i < dataLength; i++) {
+                // NaN 방지
+                countingArr[list[i]] ? countingArr[list[i]] += 1 : countingArr[list[i]] = 1
+            }
+            
+            // 출력
+            const outArr = []
+            // console.log(countingArr)
+            for(let i in countingArr) {
+                if(countingArr[i]) {
+                    for(let j = 0; j < countingArr[i]; j++) {
+                        outArr.push(`${i}`)
+                    }
+                }
+            }
+            return outArr.join('\n')
+        }
+        
+        console.log(sortByAge(input1))
+        console.log(sortCoords(input2))
+        console.log(countingSort(input3))
+    </script>
+</body>
+</html>
