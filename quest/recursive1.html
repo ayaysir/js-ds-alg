@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+
+<body>
+    https://www.acmicpc.net/problem/2747
+    https://www.acmicpc.net/problem/1074
+    https://www.acmicpc.net/problem/7490
+    <img src="./../img/zero.png" width="100%">
+    <script>
+        // O(2^n)
+        function fibo(num) {
+            if (num <= 1) {
+                return num
+            }
+
+            return fibo(num - 1) + fibo(num - 2)
+        }
+
+        function fiboLoop(num) {
+            if (num <= 1) {
+                return num
+            }
+
+            let prevNum = 1
+            let sum = 1
+            for (let i = 2; i < num; i++) {
+                const temp = sum
+                sum += prevNum
+                prevNum = temp
+                // console.log(prevNum, sum)
+            }
+
+            return sum
+        }
+
+
+        // console.log(fibo(45))
+        console.log(fibo(12), fiboLoop(12))
+
+        const input1 = `2 3 1`
+        const input2 = `3 7 7`
+
+        function z(inputStr) {
+            // console.log("start")
+            const arr = inputStr.split(/ /)
+            const n = parseInt(arr[0]),
+                r = parseInt(arr[1]),
+                c = parseInt(arr[2])
+
+            // console.log(n, r, c)
+
+            const find = (targetR, targetC, r0, c0, currentCount) => {
+
+                // console.log("dee", r0, c0, n * n - 1)
+                if (r0  > Math.pow(2, n) - 1 || c0  > Math.pow(2, n) - 1) {
+                    return currentCount
+                }
+
+
+                for (let i = r0; i < r0 + 2; i++) {
+                    for (let j = c0; j < c0 + 2; j++) {
+                        // console.log(i, j)
+                        if (targetR == i && targetC == j) {
+                            
+                            // console.log("cc", currentCount)
+                            return currentCount
+                        } else {
+                            currentCount += 1
+                        }
+                    }
+                }
+
+                
+                // console.log("br", c0 + 1, n * n - 1)
+                if (c0 + 1 < Math.pow(2, n) - 1) {
+                    return find(targetR, targetC, r0, c0 + 2, currentCount)
+                } else {
+                    return find(targetR, targetC, r0 + 2, 0, currentCount)
+                }
+
+            }
+
+            return find(r, c, 0, 0, 0)
+        }
+
+        console.log(z(input1), z(input2))
+        
+        const input3 = `3
+3
+7
+9`
+        
+        function makeZeroFailed(inputStr) {
+            const arr = inputStr.split(/\n/)
+            
+            const cases = []
+            for(let i = 1; i <= parseInt(arr[0]); i++) {
+                const eachArr = []
+                for(let j = 1; j <= parseInt(arr[i]); j++ ) {
+                    eachArr.push(j)
+                }
+                cases.push(eachArr)
+            }
+            
+            // console.log(cases)
+            
+            const find = (pointer, arr, makedStr) => {
+                if(pointer == arr.length - 1) {
+                    return makedStr
+                }
+                
+                pointer += 1
+                return find(pointer, arr, makedStr + "x" + arr[pointer])
+            }
+            
+            return find(0, cases[0], cases[0][0] + "")
+        }
+        
+        function makeZeroAnswer(inputStr) {
+            const arr = inputStr.split(/\n/)
+            
+            const cases = []
+            for(let i = 1; i <= parseInt(arr[0]); i++) {
+                const eachArr = []
+                for(let j = 1; j <= parseInt(arr[i]); j++ ) {
+                    eachArr.push(j)
+                }
+                cases.push(eachArr)
+            }
+            
+            // console.log(cases)
+            
+            
+            // 모든 연산자의 경우를 구함
+            const recursive = (array, n, operList) => {
+                if(array.length == n) {
+                    operList.push(JSON.parse(JSON.stringify(array))) // hard-copy
+                    return
+                }
+                
+                // ??
+                array.push(" ")
+                recursive(array, n, operList)
+                array.pop()
+                
+                array.push("+")
+                recursive(array, n, operList)
+                array.pop()
+                
+                array.push("-")
+                recursive(array, n, operList)
+                array.pop()
+            }
+            
+            const outArr = []
+            for(let each of cases) {
+                const operList = []
+                recursive([], each.length - 1, operList)
+                // console.log(operList)
+                
+                for(let oper of operList){
+                    let str = ""
+                    for(let i = 0; i < each.length - 1; i++) {
+                        str += each[i] + oper[i]
+                    }
+                    str += each[each.length - 1]
+                    
+                    const result = eval(str.replace(/ /g, ''))
+                    // console.log(result)
+                    if(result == 0) {
+                        outArr.push(str)
+                    }
+                    
+                }
+                outArr.push('')
+            }
+            
+            return outArr.join('\n')
+        }
+        
+        console.log(makeZeroFailed(input3))
+        console.log(makeZeroAnswer(input3))
+    </script>
+</body></html>
