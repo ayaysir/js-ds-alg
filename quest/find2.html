@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+
+<body>
+    https://www.acmicpc.net/problem/2110
+    https://www.acmicpc.net/problem/1939
+    <script>
+        const input1 = `5 3
+1
+2
+8
+4
+9`
+
+        function installRouter(inputStr) {
+            console.groupCollapsed("installRouter log")
+            // n: 집의 개수, c: 공유기의 개수
+            const spl = inputStr.split(/\n/)
+            const n = +spl[0].split(/ /)[0]
+            const c = +spl[0].split(/ /)[1]
+            const array = spl.slice(1)
+            array.forEach((el, n) => {
+                array[n] = (+array[n])
+            })
+
+            // 오름차순 정렬
+            array.sort((a, b) => {
+                return a - b
+            })
+            console.log(array)
+
+            let start = array[1] - array[0]
+            let end = array[array.length - 1] - array[0]
+            let result = 0
+
+            while (start <= end) {
+                console.log("start-end", start, end)
+                const mid = parseInt((start + end) / 2) // mid는 갭을 의미
+                console.log("mid", mid)
+                let value = array[0]
+                let count = 1
+
+                for (let i = 1; i < array.length; i++) {
+                    console.log("value", array[i], value, mid)
+                    if (array[i] >= value + mid) {
+                        value = array[i]
+                        count += 1
+                    }
+                }
+
+                if (count >= c) {
+                    start = mid + 1
+                    console.log("count >= c", count, c, mid, start)
+                    result = mid
+                } else {
+                    end = mid - 1
+                }
+            }
+            console.groupEnd()
+            return result
+
+        }
+
+        console.log("installRouter", installRouter(input1))
+
+        const input2 = `3 3
+1 2 2
+3 1 3
+2 3 2
+1 3`
+
+        function bridge(inputStr) {
+            console.groupCollapsed("bridge log")
+            const spl = inputStr.split(/\n/)
+            const n = +spl[0].split(/ /)[0]
+            const m = +spl[0].split(/ /)[1]
+            const adj = []
+            for (let i = 1; i <= n; i++) {
+                adj[i] = []
+            }
+            console.log(adj)
+
+            const startNode = +spl[spl.length - 1].split(/ /)[0]
+            const endNode = +spl[spl.length - 1].split(/ /)[1]
+            console.log("startNode, endNode", startNode, endNode)
+
+            let start = Infinity
+            let end = 1
+
+            for (let i = 0; i < m; i++) {
+                const iSpl = spl[i + 1].split(/ /)
+                const x = iSpl[0]
+                const y = iSpl[1]
+                const weight = iSpl[2]
+                console.log("input", x, y, weight)
+
+                adj[x].push([y, weight])
+                adj[y].push([x, weight])
+                start = Math.min(start, weight)
+                end = Math.max(end, weight)
+                console.log("start, end", start, end)
+            }
+
+            // 경로가 있는지 확인
+            const bfs = c => {
+                console.log("=== bfs start ===")
+                const queue = [startNode]
+                const visited = (_ => {
+                    const iArr = []
+                    for (let i = 0; i < n + 1; i++) {
+                        iArr.push(false)
+                    }
+                    return iArr
+                })();
+                visited[startNode] = true
+                console.log("visited before,", JSON.parse( JSON.stringify(visited)))
+
+                while (queue.length > 0) {
+                    const x = queue.shift()
+                    console.log("x", x)
+                    for (let el of adj[x]) {
+                        const y = +el[0]
+                        const weight = +el[1]
+                        console.log("while", y, weight, c, !visited[y])
+                        
+                        // y로 방문한 적이 없고, mid(이진 탐색의 중량)가 그 y의 중량보다 크다면
+                        if (!visited[y] && weight >= c) {
+                            visited[y] = true
+                            queue.push(y)
+                            console.log("queue", JSON.parse(JSON.stringify(queue)))
+                        }
+                    }
+                }
+                console.log("after", JSON.parse(JSON.stringify(visited)), endNode)
+
+                return visited[endNode]
+            }
+
+            let result = start
+            
+            // mid는 현재 중량을 의미
+            // mid(중량)으로 이동 가능하다면, start를 증가
+            // 반대의 경우 end를 감소
+            while (start <= end) {
+                const mid = parseInt((start + end) / 2)
+                console.log("bfs(mid)", bfs(mid), mid)
+                if (bfs(mid)) {
+                    result = mid // 이동 가능한 중량
+                    start = mid + 1
+                } else {
+                    end = mid - 1
+                }
+            }
+            
+            console.groupEnd()
+            
+            return result
+
+        }
+
+        console.log("bridge", bridge(input2))
+    </script>
+</body></html>

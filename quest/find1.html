@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+
+<body>
+    https://www.acmicpc.net/problem/1543
+    https://www.acmicpc.net/problem/1568
+    https://www.acmicpc.net/problem/1302
+    https://www.acmicpc.net/problem/1668
+    <script>
+        const input1 = `ababababa
+aba`
+        const input2 = `a a a a a
+a a`
+
+        function find1(inputStr) {
+            const word = inputStr.split(/\n/)[1]
+            let text = inputStr.split(/\n/)[0]
+
+            let startIndex = 0,
+                count = 0
+            while (true) {
+
+                // console.log(text)
+                if (text.indexOf(word) != -1) {
+                    startIndex = text.indexOf(word) + word.length
+                    text = text.substring(startIndex, text.length)
+                    count += 1
+
+                } else {
+                    break
+                }
+            }
+            return count
+        }
+
+        function birdFailed(num) {
+            if (num <= 1) {
+                return num
+            } else if (num == 2) {
+                return 3
+            }
+
+            let i = 1
+
+            do {
+
+                // console.log(i, num)
+                if (num > i) {
+                    num -= i
+                    i += 1
+                    continue
+                } else if (num == i) {
+                    return i
+                } else {
+                    // console.log("remain", num)
+                    return i + birdFailed(num)
+                }
+            } while (true);
+
+        }
+
+        function bird(num) {
+            console.log("== start ==")
+            let result = 0
+            let k = 1 // 노래하는 숫자
+
+            while (num != 0) {
+                // 예: 5 > 4
+                if (k > num) {
+                    k = 1
+                }
+
+                num -= k
+                k += 1
+                result += 1 // k는 리셋될 수 있지만 result는 리셋되지 않음
+                console.log("trace:", k, num, result)
+            }
+
+            return result
+        }
+
+        console.log(find1(input1), find1(input2))
+        console.log(birdFailed(15), birdFailed(14), birdFailed(10))
+        console.log(bird(15), bird(14), bird(10))
+
+        const input3 = `5
+top
+top
+top
+top
+kimtop`
+
+        function bestSeller(inputStr) {
+            const splittedArr = inputStr.split(/\n/)
+            const dataLength = splittedArr[0]
+            const table = splittedArr.slice(1)
+
+            const obj = {}
+            table.forEach(el => {
+                if (!obj[el]) {
+                    obj[el] = 1
+                } else {
+                    obj[el] += 1
+                }
+            })
+
+            let max = 0
+            let maxKey = []
+            for (let key in obj) {
+                if (max < obj[key]) {
+                    max = obj[key]
+                }
+            }
+            for (let key in obj) {
+                if (max == obj[key]) {
+                    maxKey.push(key)
+                }
+            }
+
+            // console.log(obj[maxKey])
+
+            // maxKey.push("aaa")
+            // maxKey.push("bbb")
+            // 오름차순 정렬
+            maxKey.sort((a, b) => {
+                return a > b ? 1 : a == b ? 0 : -1
+            })
+            return maxKey[0]
+        }
+
+        console.log(bestSeller(input3))
+
+        const input4 = `5
+1
+2
+3
+4
+5`
+
+        function trophy(inputStr) {
+            const splittedArr = inputStr.split(/\n/)
+            const dataLength = splittedArr[0]
+            const table = splittedArr.slice(1)
+
+            let leftCount = 0,
+                rightCount = 0
+
+            let max = 0
+            for (let i = 0; i < table.length; i++) {
+                if (table[i] > max) {
+                    max = table[i]
+                    leftCount++
+                }
+            }
+
+            table.reverse()
+            max = 0
+            for (let i = 0; i < table.length; i++) {
+                if (table[i] > max) {
+                    max = table[i]
+                    rightCount++
+                }
+            }
+
+            return leftCount + "\n" + rightCount
+
+        }
+        console.log(trophy(input4))
+
+        const input5 = `5 4
+....
+.X..
+.X..
+...X
+....`
+
+        function castleFailed(inputStr) {
+            const spl = inputStr.split(/\n/)
+            const m = spl[0].split(/ /)[1]
+            const n = spl[0].split(/ /)[0]
+            const currentCastle = spl.slice(1)
+
+
+            let count = 0
+            
+            for(let i in currentCastle) {
+                currentCastle[i] = currentCastle[i].split('')
+            }
+            
+            // console.log(currentCastle)
+            
+            for (let i = 0; i < n; i++) {
+                let isRowHasX = false
+                for(let j = 0; j < m; j++) {
+                    if(currentCastle[j][i] == 'X') {
+                        isRowHasX = true
+                        break
+                    }
+                }
+                if(!isRowHasX) {
+                    count++
+                }
+            }
+
+
+            return count
+        }
+        
+        function castleAnswer(inputStr) {
+            const spl = inputStr.split(/\n/)
+            const m = spl[0].split(/ /)[1]
+            const n = spl[0].split(/ /)[0]
+            const currentCastle = spl.slice(1)
+
+
+            let rowCount = 0
+            let colCount = 0
+            
+            for(let i in currentCastle) {
+                currentCastle[i] = currentCastle[i].split('')
+            }
+            
+            // console.log(currentCastle)
+            
+            // 행 열 각각 수를 구한 후 더 큰 숫자를 리턴
+            
+            for (let i = 0; i < n; i++) {
+                let isRowHasX = false
+                for(let j = 0; j < m; j++) {
+                    if(currentCastle[i][j] == 'X') {
+                        isRowHasX = true
+                        break
+                    }
+                }
+                if(!isRowHasX) {
+                    rowCount++
+                }
+            }
+            
+            for (let i = 0; i < m; i++) {
+                let isColHasX = false
+                for(let j = 0; j < n; j++) {
+                    if(currentCastle[j][i] == 'X') {
+                        isColHasX = true
+                        break
+                    }
+                }
+                if(!isColHasX) {
+                    colCount++
+                }
+            }
+
+
+            return Math.max(rowCount, colCount)
+        }
+
+        console.log("Failed: ", castleFailed(input5))
+        console.log("Answer: ",castleAnswer(input5))
+    </script>
+</body></html>
