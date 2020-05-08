@@ -127,7 +127,7 @@
                         const weight = +el[1]
                         console.log("while", y, weight, c, !visited[y])
                         
-                        // y로 방문한 적이 없고, mid(이진 탐색의 중량)가 그 y의 중량보다 크다면
+                        // y로 방문한 적이 없고, mid(이진 탐색의 중량)가 그 y의 중량보다 작거나 같다면
                         if (!visited[y] && weight >= c) {
                             visited[y] = true
                             queue.push(y)
