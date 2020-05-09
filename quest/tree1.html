@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+
+<body>
+    https://www.acmicpc.net/problem/1991
+    https://www.acmicpc.net/problem/2250
+    <img src="https://onlinejudgeimages.s3-ap-northeast-1.amazonaws.com/upload/201008/ttt.PNG" width="100%">
+    <script>
+        const input1 = `7
+A B C
+B D .
+C E F
+E . .
+F . G
+D . .
+G . .`
+
+        function traverseTree(inputStr) {
+            const spl = inputStr.split(/\n/)
+            const nodeCount = spl[0]
+            const treeArr = spl.slice(1)
+            const treeObj = {}
+            treeArr.forEach(el => {
+                const elSpl = el.split(/ /)
+                treeObj[elSpl[0]] = elSpl.slice(1)
+            })
+            // console.log(treeArr, treeObj)
+
+
+            const order = (node, order) => {
+                const outArr = []
+
+                // outArr.push())의 위치에 따라 전위, 중위, 후위 출력이 결정됨
+                const orderRecursive = (node, order) => {
+
+                    const nodeLeft = treeObj[node][0]
+                    const nodeRight = treeObj[node][1]
+
+                    order == "pre" && outArr.push(node)
+                    if (nodeLeft != ".") {
+                        orderRecursive(nodeLeft, order)
+                    }
+                    order == "in" && outArr.push(node)
+                    if (nodeRight != ".") {
+                        orderRecursive(nodeRight, order)
+                    }
+                    order == "post" && outArr.push(node)
+                }
+                orderRecursive(node, order)
+                return outArr.join("")
+
+            }
+            return order("A", "pre") + "\n" + order("A", "in") + "\n" + order("A", "post")
+        }
+
+        console.log(traverseTree(input1))
+
+        const input2 = `19
+1 2 3
+2 4 5
+3 6 7
+4 8 -1
+5 9 10
+6 11 12
+7 13 -1
+8 -1 -1
+9 14 15
+10 -1 -1
+11 16 -1
+12 -1 -1
+13 17 -1
+14 -1 -1
+15 18 -1
+16 -1 -1
+17 -1 19
+18 -1 -1
+19 -1 -1`
+        
+        class Node {
+            constructor(number, leftNode, rightNode) {
+                this.parent = -1
+                this.number = number
+                // 실제 들어가는 것은 node 가 아니고 숫자(스트링)
+                this.leftNode = leftNode
+                this.rightNode = rightNode
+            }
+        }
+
+        function widthOfTree(inputStr) {
+            console.groupCollapsed("widthOfTree")
+            const spl = inputStr.split(/\n/)
+            const nodeCount = +spl[0]
+            const treeArr = spl.slice(1)
+            const treeObj = {}
+            
+            // 트리 생성
+            treeArr.forEach(el => {
+                const elSpl = el.split(/ /)
+                const node = new Node(+elSpl[0], +elSpl[1], +elSpl[2])
+                   
+                treeObj[+elSpl[0]] = node
+            })
+            
+            // parent 설정
+            for(let key in treeObj) {
+                const leftNode = treeObj[key].leftNode
+                const rightNode = treeObj[key].rightNode
+                
+                if(leftNode != -1) {
+                    treeObj[leftNode].parent = key
+                }
+                if(treeObj[key].rightNode != -1) {
+                    treeObj[rightNode].parent = key
+                }
+            }
+            
+            
+            console.log(treeObj)
+            
+            const levelMin = [nodeCount]
+            const levelMax = [0]
+            for(let i = 1; i <= nodeCount; i++) {
+                levelMin[i] = nodeCount
+                levelMax[i] = 0
+            }
+            
+            let root = -1
+            let x = 1
+            let levelDepth = 1
+            for(let i = 1; i <= nodeCount; i++) {
+                if(treeObj[i].parent == -1) {
+                    root = i
+                }
+            }
+            
+            
+            
+            const order = (node, level) => {
+                const outArr = []
+
+                // outArr.push())의 위치에 따라 전위, 중위, 후위 출력이 결정됨
+                const orderRecursive = (node, level) => {
+
+                    const nodeLeft = treeObj[node].leftNode
+                    const nodeRight = treeObj[node].rightNode
+                    
+                    levelDepth = Math.max(levelDepth, level)
+                    
+                    if (nodeLeft != -1) {
+                        orderRecursive(nodeLeft, level + 1)
+                    }
+                    // == 중위 부분 처리 ==
+                    outArr.push(node)
+                    
+                    // 현재 레벨에서 가장 작은 값, 큰 값
+                    levelMin[level] = Math.min(levelMin[level], x)
+                    levelMax[level] = Math.max(levelMax[level], x)
+                    x += 1
+                    console.log("in", node, level, x)
+                    
+                    if (nodeRight != -1) {
+                        orderRecursive(nodeRight, level + 1)
+                    }
+                }
+                orderRecursive(node, level)
+                return outArr
+
+            }
+            
+            const outArr = order(root, 1)
+            console.log("levelMin, levelMax, root", levelMin, levelMax, root)
+            let resultLevel = 1
+            let resultWidth = levelMax[1] - levelMin[1] + 1
+            for(let i = 2; i <= levelDepth; i++) {
+                const width = levelMax[i] - levelMin[i] + 1
+                if(resultWidth < width) {
+                    resultLevel = i
+                    resultWidth = width
+                }
+            }
+            console.log("result", resultLevel, resultWidth)
+            console.groupEnd()
+            return {
+                outArr,
+                resultLevel,
+                resultWidth
+            }
+        }
+        
+        console.log(widthOfTree(input2))
+    </script>
+</body></html>

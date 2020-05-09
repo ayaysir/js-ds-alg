@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+
+<body>
+    https://www.acmicpc.net/problem/1927
+    https://www.acmicpc.net/problem/1715
+    https://www.acmicpc.net/problem/1766
+    <script src="./../js/heap.js"></script>
+    <script>
+        const input1 = `9
+0
+12345678
+1
+2
+0
+0
+0
+0
+32`
+
+        function minHeapTest(inputStr) {
+            const spl = inputStr.split(/\n/)
+            const inputLength = +spl[0]
+            const command = spl.slice(1)
+
+            const heap = new MinHeap();
+            const outArr = []
+
+            // console.log(command);
+
+            for (let el of command) {
+
+                // console.log(+el, heap.getList())
+                if (+el == 0) {
+                    const popped = heap.pop()
+                    if (!popped) {
+                        outArr.push(0)
+                    } else {
+                        outArr.push(popped)
+                    }
+                } else {
+                    heap.insert(+el)
+
+                }
+            }
+
+            return outArr.join('\n')
+
+        }
+
+        console.log(minHeapTest(input1))
+
+
+        // 가장 크기가 작은 숫자 카드 묶음을 합쳤을 때, 비교 횟수가 가장 적음
+        const input2 = `3
+10
+20
+40`
+
+        function card(inputStr) {
+            const spl = inputStr.split(/\n/)
+            const inputLength = +spl[0]
+            const cardNums = spl.slice(1)
+
+            const heap = new MinHeap()
+            for (let el of cardNums) {
+                heap.insert(el)
+            }
+            console.log(heap.getList())
+
+            let result = 0
+            while (heap.getList().length != 1) {
+                const c1 = +heap.pop()
+                const c2 = +heap.pop()
+                result += c1 + c2
+                heap.insert(c1 + c2)
+            }
+
+            return result
+
+        }
+        console.log(card(input2))
+
+        const input3 = `4 2
+4 2
+3 1`
+
+        // 위상 정렬
+        // 순서가 정해져 있는 작업을 정렬할 때 사용
+        // O(V+E)
+        function workbook(inputStr) {
+            const spl = inputStr.split(/\n/)
+            const n = +spl[0].split(/ /)[0]
+            const m = +spl[0].split(/ /)[1]
+            const cases = spl.slice(1)
+            
+            const heap = new MinHeap()
+            const result = []
+            
+            const indegree = []
+            const arrays = []
+            for(let i = 0; i <= n; i++) {
+                arrays[i] = []
+                indegree[i] = 0
+            }
+            
+            for(let el of cases) {
+                const iSpl = el.split(/ /)
+                arrays[iSpl[0]].push(+iSpl[1])
+                indegree[iSpl[1]] += 1
+            }
+            
+            // 진입차수가 0인 정점을 최소힙(큐)에 삽입
+            for(let i = 1; i <= n; i++) {
+                if(indegree[i] == 0) {
+                    heap.insert(i)
+                }
+            }
+            
+            while(heap.getList().length != 0) {
+                // 큐에서 원소를 꺼내 해당 원소와 
+                const data = heap.pop()
+                result.push(data)
+                
+                for(let y of arrays[data]) {
+                    indegree[y] -= 1 // 간선을 제거
+                    
+                    // 제거 이후 진입차수가 0이 된 정점을 최소힙(큐)에 삽입
+                    if(indegree[y] == 0) {
+                        heap.insert(y)
+                    }
+                }
+                // 큐가 빌 때까지 for 문을 반복
+            }
+            
+            return result.join(' ')
+            
+            
+        }
+        
+        console.log(workbook(input3))
+    </script>
+</body></html>
