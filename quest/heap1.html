@@ -70,7 +70,7 @@
             for (let el of cardNums) {
                 heap.insert(el)
             }
-            console.log(heap.getList())
+            // console.log(heap.getList())
 
             let result = 0
             while (heap.getList().length != 1) {
@@ -134,7 +134,7 @@
                         heap.insert(y)
                     }
                 }
-                // 큐가 빌 때까지 for 문을 반복
+                // 큐가 빌 때까지 while 문을 반복
             }
             
             return result.join(' ')
