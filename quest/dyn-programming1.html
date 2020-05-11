@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+
+<body>
+   
+    https://www.acmicpc.net/problem/1904
+    https://www.acmicpc.net/problem/12865
+  
+    <script>
+        function dp1(inputStr) {
+            const num = +inputStr
+            const arr = []
+            arr[1] = 1
+            arr[2] = 2
+
+            for (let i = 3; i <= num; i++) {
+                arr[i] = (arr[i - 1] + arr[i - 2]) % 15746
+            }
+
+            return arr[num]
+
+        }
+
+        console.log(dp1(4))
+
+        const input2 = `4 7
+6 13
+4 8
+3 6
+5 12`
+
+        function backpack(inputStr) {
+            console.groupCollapsed("backpack")
+            const spl = inputStr.split(/\n/)
+            const n = +spl[0].split(/ /)[0]
+            const maxWeight = +spl[0].split(/ /)[1]
+            const cases = spl.slice(1)
+            
+
+            const dpTable = (_ => {
+                const arr = []
+
+                const iArr = []
+                for (let j = 0; j <= maxWeight; j++) {
+                    iArr.push(0)
+                }
+                for (let i = 0; i <= n; i++) {
+                    arr.push(iArr)
+                }
+                return arr
+            })();
+
+            for (let i = 1; i <= n; i++) {
+                const weight = +cases[i - 1].split(/ /)[0]
+                const value = +cases[i - 1].split(/ /)[1]
+                console.log("weight, value", weight, value)
+
+                for (let j = 1; j <= maxWeight; j++) {
+                    if (j < weight) {
+                        // 물건의 무게가 j 보다 더 작을 때는 그대로 한 칸 내림
+                        dpTable[i][j] = dpTable[i - 1][j]
+                    } else {
+                        // 물건의 무게가 j보다 같거나 크면 max(위의 값, 위의 행에서 j에 현재 무게를 뺀 값을 열로 한 것 중 더 큰 것?)
+                        dpTable[i][j] = Math.max(dpTable[i-1][j], dpTable[i-1][j-weight] + value)
+                        console.log(JSON.stringify(dpTable), i, j, j-weight, dpTable[i-1][j-weight], value)
+                    }
+                    
+                    
+                }
+            }
+            console.groupEnd()
+            return dpTable[n][maxWeight]
+        }
+        
+        
+        console.log(backpack(input2))
+        
+        const input3 =`6
+10 20 10 30 20 50`
+        function lis(inputStr) {
+            const spl = inputStr.split(/\n/)
+            const dataLength = +spl[0]
+            const data = spl[1].slice(1)
+            
+            let first = +data[0]
+            let second = +data[1]
+            
+            let count = 2
+            for(let i = 2; i < dataLength; i++) {
+                if(+data[i] == first + second) {
+                    count += 1
+                    fisrt = second
+                    second = +data[i]
+                }
+            }
+            
+            return count
+        }
+        
+        function lisAnswer(inputStr) {
+            console.groupCollapsed("lisAnswer")
+            const spl = inputStr.split(/\n/)
+            const dataLength = +spl[0]
+            const data = spl[1].split(/ /)
+            
+            const dpTable = (new Array(6)).fill(1)
+            console.log(data, dpTable)
+            
+            for(let i = 1; i < dataLength; i++) {
+                for(let j = 0; j < i; j++) {
+                    if(data[j] < data[i]) {
+                        dpTable[i] = Math.max(dpTable[i], dpTable[j] + 1)
+                    }
+                    console.log(JSON.stringify(dpTable))
+                }
+            }
+            console.log(dpTable)
+            console.groupEnd()
+            return Math.max.apply(null, dpTable)
+        }
+        
+        console.log(lis(input3), lisAnswer(input3))
+    </script>
+</body></html>
