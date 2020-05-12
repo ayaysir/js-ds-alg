@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+   https://www.acmicpc.net/problem/9251
+   <img src="./../img/dyn2-1.png" width="100%">
+   <img src="./../img/dyn2-2.png" width="100%">
+   
+   https://www.acmicpc.net/problem/1495
+   <img src="./../img/dyn2-3.png" width="100%">
+   <img src="./../img/dyn2-4.png" width="100%">
+   
+   https://www.acmicpc.net/problem/2655
+   <img src="./../img/dyn2-5.png" width="100%">
+   <img src="./../img/dyn2-6.png" width="100%">
+   <img src="./../img/dyn2-7.png" width="100%">
+   
+    <script>
+        
+        function dpTableMaker(colFill, colNum, rowNum) {
+            const array = Array(rowNum).fill(null).map(() => Array(colNum).fill(colFill));
+            // console.log(array)
+            
+            return array
+        }
+        
+        const input1 = `ACAYKP
+CAPCAK`
+        
+        // Longest Common Subsequence (최장 공통 부분 수열)
+        // 값이 다를 때에는 위와 왼쪽에서 더 큰값을 넣는다
+        function lcs(inputStr) {
+            console.groupCollapsed("lcs")
+            
+            const spl = inputStr.split(/\n/)
+            const x = spl[0].split('')
+            const y = spl[1].split('')
+            
+            const dpTable = dpTableMaker(0, y.length + 1, x.length + 1)
+            
+            for(let i = 1; i <= x.length; i++) {
+                for(j = 1; j <= y.length; j++) {
+                    console.log("xy", x[i-1], y[j-1], x[i-1] == y[j-1])
+                    if(x[i-1] == y[j-1]) {
+                        // 값이 같을 때에는 대각선(↘)에서 1 더하고 
+                        dpTable[i][j] = dpTable[i-1][j-1] + 1  
+                        console.log("같음", dpTable[i][j])
+                    } else {
+                        dpTable[i][j] = Math.max(dpTable[i][j-1], dpTable[i-1][j])
+                    }
+                    
+                    console.log(i, j, JSON.stringify(dpTable))
+                }
+            }
+            
+            console.groupEnd()
+            return dpTable[x.length][y.length]
+        }
+        
+        console.log(lcs(input1))
+        
+        
+        const input2 = `3 5 10
+5 3 7`
+        function guitarist(inputStr) {
+            console.groupCollapsed("guitarist")
+            
+            const spl = inputStr.split(/\n/)
+            const numOfSong = +spl[0].split(/ /)[0]
+            const startVol = +spl[0].split(/ /)[1]
+            const maxVol = +spl[0].split(/ /)[2]
+            const cases = spl[1].split(/ /).map(o => +o)
+            
+            
+            const dpt = dpTableMaker(0, maxVol + 1, numOfSong + 1)
+            console.log(numOfSong, startVol, maxVol, cases, dpt)
+            dpt[0][startVol] = 1
+            
+            for(let i = 1; i <= numOfSong; i++) {
+                for(let j = 0; j <= maxVol; j++) {
+                    if(dpt[i-1][j] == 0) {
+                        continue
+                    } 
+                    if(j - cases[i-1] >= 0) {
+                        const iCol = j - parseInt(cases[i-1])
+                        dpt[i][iCol] = 1
+                    }
+                    if(j + cases[i-1] <= maxVol) {
+                        const iCol = j + parseInt(cases[i-1])
+                        dpt[i][iCol] = 1
+                    }
+                }
+            }
+            
+            let result = -1
+            for(let i = maxVol; i >= 0; i--) {
+                if(dpt[numOfSong][i] == 1) {
+                    result = i
+                    break
+                }
+            }
+            
+            console.groupEnd()
+            return result
+            
+        }
+        console.log(guitarist(input2))
+        
+        const input3 = `5
+25 3 4
+4 4 6
+9 2 3
+16 2 5
+1 5 2`
+        // 가장 긴 증가하는 부분 수열(LIS)
+        function tallestTower(inputStr) {
+            console.groupCollapsed("tallesTower")
+            
+            const spl = inputStr.split(/\n/)
+            const n = +spl[0]
+            const cases = spl.slice(1)
+            const array = []
+            array.push({
+                i: 0,
+                area: 0,
+                height: 0,
+                weight: 0
+            })
+            
+            for(let i = 0; i < n; i++) {
+                const iSpl = cases[i].split(/ /)
+                const area = +iSpl[0]
+                const height = +iSpl[1]
+                const weight = +iSpl[2]
+                array.push({
+                    i: i + 1,
+                    area,
+                    height,
+                    weight
+                })
+            }
+            
+            // 무게기준 정렬
+            array.sort((a, b) => {
+                return a.weight - b.weight
+            })
+            
+            console.log(array)
+            
+            const dpt = (new Array(n + 1)).fill(0)
+            console.log("dpt", dpt)
+            for(let i = 1; i <= n; i++) {
+                for(let j = 0; j < i; j++) {
+                    if(array[i].area > array[j].area) {
+                        dpt[i] = Math.max(dpt[i], dpt[j] + array[i].height)
+                    }
+                }
+            }
+            
+            // 역추적 부분
+            let maxVal = Math.max.apply(null, dpt)
+            let index = n
+            const result = []
+            
+            while(index != 0) {
+                console.log(maxVal, dpt[index], result)
+                if(maxVal == dpt[index]) {
+                    result.push(array[index].i)
+                    maxVal -= array[index].height
+                }
+                index -= 1
+            }
+            
+            result.reverse()
+            console.groupEnd()
+            return {
+                numOfBlocks: result.length,
+                result
+            }
+        }
+        
+        console.log(tallestTower(input3))
+        
+    </script>
+</body>
+</html>

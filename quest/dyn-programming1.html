@@ -6,11 +6,18 @@
 </head>
 
 <body>
-   
     https://www.acmicpc.net/problem/1904
     https://www.acmicpc.net/problem/12865
+    https://www.acmicpc.net/problem/11053
   
     <script>
+        function dpTableMaker(colFill, colNum, rowNum) {
+            const array = Array(rowNum).fill(null).map(() => Array(colNum).fill(colFill));
+            // console.log(array)
+            
+            return array
+        }
+        
         function dp1(inputStr) {
             const num = +inputStr
             const arr = []
@@ -41,18 +48,19 @@
             const cases = spl.slice(1)
             
 
-            const dpTable = (_ => {
-                const arr = []
-
-                const iArr = []
-                for (let j = 0; j <= maxWeight; j++) {
-                    iArr.push(0)
-                }
-                for (let i = 0; i <= n; i++) {
-                    arr.push(iArr)
-                }
-                return arr
-            })();
+//            const dpTable = (_ => {
+//                const arr = []
+//
+//                const iArr = []
+//                for (let j = 0; j <= maxWeight; j++) {
+//                    iArr.push(0)
+//                }
+//                for (let i = 0; i <= n; i++) {
+//                    arr.push(iArr)
+//                }
+//                return arr
+//            })();
+            const dpTable = dpTableMaker(0, maxWeight + 1, n + 1)
 
             for (let i = 1; i <= n; i++) {
                 const weight = +cases[i - 1].split(/ /)[0]
