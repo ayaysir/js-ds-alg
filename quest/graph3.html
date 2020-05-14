@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+
+<body>
+    https://www.acmicpc.net/problem/10282
+    https://www.acmicpc.net/problem/5719
+    https://www.acmicpc.net/problem/1774
+    <script src="./../js/heap.js"></script>
+    <script>
+        function adjMaker(rowNum) {
+            return Array(rowNum).fill(null).map(() => {
+                return []
+            })
+        }
+        
+        function dpTableMaker(colFill, colNum, rowNum) {
+            const array = Array(rowNum).fill(null).map(() => Array(colNum).fill(colFill));
+
+            return array
+        }
+
+        const input1 = `2
+3 2 2
+2 1 5
+3 2 5
+3 3 1
+2 1 2
+3 1 8
+3 2 4`
+
+        function hacking(inputStr) {
+            console.groupCollapsed("hacking")
+            
+            const spl = inputStr.split(/\n/)
+            const caseLength = +spl[0]
+            const cases = []
+
+            let targetRow = 1
+            for (let i = 1; i < spl.length; i++) {
+                if (i == targetRow) {
+                    // n: 컴퓨터 개수
+                    // d: 의존성 개수
+                    // c: 출발점(해킹당한 컴퓨터)
+                    const [n, d, c] = spl[i].split(/ /).map(_ => +_)
+                    const rows = spl.slice(i + 1, i + 1 + d).map((el) => {
+                        const iSpl = el.split(/ /)
+                        const [a, b, s] = iSpl.map(_ => +_)
+                        return {
+                            a,
+                            b,
+                            s
+                        }
+                    })
+
+                    console.log(n, d, c)
+                    cases.push({
+                        ndc: {
+                            n,
+                            d,
+                            c
+                        },
+                        rows
+                    })
+
+                    targetRow += i + d
+                }
+            }
+            console.log(cases)
+
+
+
+            let caseNum = 1
+            const outArr = []
+            for (let each of cases) {
+                console.log("==== case ====")
+                const {
+                    n,
+                    d,
+                    c
+                } = each.ndc
+                console.log("ndc", n, d, c)
+                const adj = adjMaker(n + 1)
+                const distArr = (new Array(n + 1)).fill(Infinity)
+
+                for (let i = 0; i < d; i++) {
+                    const x = each.rows[i].a
+                    const y = each.rows[i].b
+                    const cost = each.rows[i].s
+
+                    adj[y].push([x, cost])
+
+                }
+
+                console.log("adj", adj, distArr)
+
+                const dijkstra = (start) => {
+
+                    const heapPush = (heapArr, eachData) => {
+                        heapArr.push(eachData)
+                        heapArr.sort((a, b) => {
+                            return parseInt(b[0]) - parseInt(a[0])
+                        })
+                    }
+
+                    const heapArr = []
+                    heapPush(heapArr, [0, start])
+                    console.log("heapArr1", JSON.stringify(heapArr))
+                    distArr[start] = 0
+
+                    while (heapArr.length != 0) {
+                        const [dist, now] = heapArr.pop()
+                        console.log("dist, now", dist, now, distArr, adj)
+                        if (distArr[now] < dist) {
+                            continue
+                        }
+                        for (let o of adj[now]) {
+                            const cost = dist + o[1]
+                            console.log("o", o, "distArr[o[0]] > cost", distArr[o[0]] > cost, distArr[o[0]], cost, o[0])
+                            if (distArr[o[0]] > cost) {
+                                distArr[o[0]] = cost
+                                heapPush(heapArr, [cost, o[0]])
+                                console.log("heapArr2", JSON.stringify(heapArr))
+                            }
+
+                        }
+                    }
+                }
+                
+                dijkstra(c)
+                let count = 0
+                let maxDist = 0
+                for (let el of distArr) {
+                    if (el != Infinity) {
+                        count += 1
+                        if (el > maxDist) {
+                            maxDist = el
+                        }
+                    }
+                }
+
+                outArr.push({
+                    caseNum,
+                    count,
+                    maxDist
+                })
+                caseNum += 1
+            }
+            
+            console.groupEnd()
+            return outArr
+
+        }
+        console.log("hacking", hacking(input1))
+        
+        const input2 = `7 9
+0 6
+0 1 1
+0 2 1
+0 3 2
+0 4 3
+1 5 2
+2 6 4
+3 6 2
+4 6 4
+5 6 1
+4 6
+0 2
+0 1 1
+1 2 1
+1 3 1
+3 2 1
+2 0 3
+3 0 2
+6 8
+0 1
+0 1 1
+0 2 2
+0 3 3
+2 5 3
+3 4 2
+4 1 1
+5 1 1
+3 0 1
+0 0`
+        
+        function almostMinRoute(inputStr) {
+            // n: 장소의 수 m: 도로의 수
+            // s: 시작점, d: 도착점
+            // 이후 U에서 V로 가는 도로의 길이가 P
+            // 0 0 종료
+            
+            const spl = inputStr.split(/\n/)
+            
+            const cases = []
+            
+            let idx = 0
+            while(idx < spl.length) {
+                if(spl[idx] == "0 0" || idx > spl.length) {
+                    break
+                }
+                
+                const iSpl = spl[idx].split(/ /)
+                
+                const [n, m] = iSpl.map(_ => +_)
+                const s = +spl[idx+1].split(/ /)[0]
+                const d = +spl[idx+1].split(/ /)[1]
+                const rows = spl.slice(idx + 2, idx + 2 + m).map(el => {
+                    const [u, v, p] = el.split(/ /).map(_ => +_)
+                    return {u, v, p}
+                })
+                idx += 2 + m
+                // console.log(n, m, s, d, rows)
+                cases.push({n, m, s, d, rows})
+                
+            }
+            console.log(cases)
+            
+            const outArr = []
+            for(let each of cases) {
+                const {n, m, s, d} = each
+                const adj = adjMaker(n + 1)
+                const reversedAdj = adjMaker(n + 1)
+                for (let i = 0; i < m; i++) {
+                    const x = each.rows[i].u
+                    const y = each.rows[i].v
+                    const cost = each.rows[i].p
+
+                    adj[x].push([y, cost])
+                    reversedAdj[y].push([x, cost])
+
+                }
+                const dropped = dpTableMaker(false, n + 1, n + 1)
+                let distArr = (new Array(n + 1)).fill(Infinity)
+                
+                const dijkstra = (start) => {
+
+                    const heapPush = (heapArr, eachData) => {
+                        heapArr.push(eachData)
+                        heapArr.sort((a, b) => {
+                            return parseInt(b[0]) - parseInt(a[0])
+                        })
+                    }
+
+                    const heapArr = []
+                    heapPush(heapArr, [0, start])
+                    // console.log("heapArr1", JSON.stringify(heapArr))
+                    distArr[start] = 0
+
+                    while (heapArr.length != 0) {
+                        const [dist, now] = heapArr.pop()
+                        // console.log("dist, now", dist, now, distArr, adj)
+                        if (distArr[now] < dist) {
+                            continue
+                        }
+                        for (let o of adj[now]) {
+                            const cost = dist + o[1]
+                            // console.log("o", o, "distArr[o[0]] > cost", distArr[o[0]] > cost, distArr[o[0]], cost, o[0])
+                            
+                            // 제거된 간선들(dropped)는 고려하지 않음
+                            if (distArr[o[0]] > cost && !dropped[now][o[0]]) {
+                                distArr[o[0]] = cost
+                                heapPush(heapArr, [cost, o[0]])
+                                // console.log("heapArr2", JSON.stringify(heapArr))
+                            }
+
+                        }
+                    }
+                }
+                
+                // 역추적
+                const bfs = (start) => {
+                    const dq = [d]
+                    while(dq.length != 0) {
+                        const now = dq.shift()
+                        if(now == start) {
+                            continue
+                        }
+                        for(let el of reversedAdj[now]) {
+                            const[prev, cost] = el
+                            
+                            // 이전 정점에서 현재까지 가는 비용을 더해서 현재 정점까지의 최단거리와 동일하다면
+                            if(distArr[now] == distArr[prev] + cost) {
+                                dropped[prev][now] = true
+                                dq.push(prev)
+                            }
+                        }
+                    }
+                }
+                
+                dijkstra(s)
+                bfs(s)
+                
+                distArr = (new Array(n + 1)).fill(Infinity)
+                dijkstra(s)
+                
+                if(distArr[d] != Infinity) {
+                    outArr.push(distArr[d])
+                } else {
+                    outArr.push(-1)
+                }  
+                
+            }
+            return outArr
+            
+        }
+        
+        console.log("almostMinRoute", almostMinRoute(input2))
+        
+        const input3 = `4 1
+1 1
+3 1
+2 3
+4 3
+1 4`
+        
+        // 최소 신장 트리(kruskal)
+        function godOfUniverse(inputStr) {
+            const spl = inputStr.split(/\n/)
+            const [n, m] = spl[0].split(/ /).map(_=>+_)
+            
+            const xyfy = el => {
+                const iSpl = el.split(/ /)
+                return {
+                    x: +iSpl[0], 
+                    y: +iSpl[1]
+                }
+            }
+            
+            const coords = spl.slice(1, n + 1).map(xyfy)
+            const khala = spl.splice(n + 1, n + 1 + m).map(xyfy)
+            
+            console.log(n, m, coords, khala)
+            
+            const getDistance = (p1, p2) => {
+                const a = p1.x - p2.x
+                const b = p1.y - p2.y
+                return Math.sqrt((a*a) + (b*b))
+            }
+            
+            // kruskal: 둘이 같은 부모를 가진다면 합치지 못하도록
+            const getParent = (parent, n) => {
+                if(parent[n] == n) {
+                    return n
+                }
+                return getParent(parent, parent[n])
+            }
+            
+            const unionParent = (parent, a, b) => {
+                a = getParent(parent, a)
+                b = getParent(parent, b)
+                if(a < b) {
+                    parent[b] = a
+                } else {
+                    parent[a] = b
+                }
+            }
+            
+            const findParent = (parent, a, b) => {
+                a = getParent(parent, a)
+                b = getParent(parent, b)
+                if(a == b) {
+                    return true
+                } else {
+                    return false
+                }
+            }
+            
+            const edges = []
+            const parent = []
+            
+            for(let i = 0; i < coords.length - 1; i++) {
+                for(let j = i + 1; j < coords.length; j++) {
+                    const obj = {
+                        a: i + 1,
+                        b: j + 1,
+                        cost: getDistance(coords[i], coords[j])
+                    }
+                    edges.push(obj)
+                }
+            }
+            
+            for(let i = 1; i <= n; i++) {
+                parent[i] = i
+            }
+            
+            for(let el of khala) {
+                unionParent(parent, el.x, el.y)
+            }
+            
+            
+            edges.sort((a, b) => a.cost - b.cost)
+            console.log(edges)
+            
+            let result = 0
+            for(let el of edges) {
+                if(!findParent(parent, el.a, el.b)) {
+                    unionParent(parent, el.a, el.b)
+                    result += el.cost
+                } 
+            }
+            
+            return result.toFixed(2)
+            
+            
+        }
+        
+        console.log("godOfUniverse", godOfUniverse(input3))
+    </script>
+</body></html>

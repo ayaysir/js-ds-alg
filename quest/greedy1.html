@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+    https://www.acmicpc.net/problem/5585
+    https://www.acmicpc.net/problem/1439
+    https://www.acmicpc.net/problem/2012
+    https://www.acmicpc.net/problem/1092
+    <script>
+        
+        function surplusMoney(money) {
+            let surplus = 1000 - (+money)
+            const coins = [500, 100, 50, 10, 5, 1]
+            const coinsObj = {
+                500: 0,
+                100: 0, 
+                50: 0,
+                10: 0,
+                5: 0,
+                1: 0
+            }
+            
+            let idx = 0, count = 0
+            while(true) {
+                if(surplus <= 0) {
+                    return {count, coinsObj}
+                }
+                
+                if(surplus >= coins[idx]) {
+                    surplus -= coins[idx]
+                    count += 1
+                    coinsObj[coins[idx]] += 1
+                } else {
+                    idx += 1
+                }
+            }
+
+        }
+        
+        // ??
+        function surplusMoney2(money) {
+            let surplus = 1000 - (+money)
+            const coins = [500, 100, 50, 10, 5, 1]
+            const coinsObj = {
+                500: 0,
+                100: 0, 
+                50: 0,
+                10: 0,
+                5: 0,
+                1: 0
+            }
+            
+            let count = 0
+            for(let coin of coins) {
+                
+                console.log(coin, surplus)
+                const currentCount = parseInt(surplus / coin)
+                count += currentCount
+                surplus %= coin
+                coinsObj[coin] += currentCount 
+            }
+            return {count, coinsObj}
+        }
+        
+        console.log("surplusMoney", surplusMoney(380))
+        console.log("surplusMoney2", surplusMoney2(380))
+        
+        function reverse(inputStr) {
+            const array = inputStr.split('')
+            const chunk = [0, 0]
+            let currentChar = array[0]
+            for(let i = 1; i < array.length; i++) {
+                if(array[i] == array[i-1] && i + 1 != array.length) {
+                    currentChar = array[i] 
+                } else {
+                    chunk[currentChar] += 1
+                    currentChar = array[i]
+                } 
+            }
+            return Math.min.apply(null, chunk)
+        }
+        console.log("reverse", reverse("0001100"), reverse("10101"), reverse("0000000"))
+        
+        
+        const input3 = `5
+1
+5
+3
+1
+2`
+        function gradeWrong(inputStr) {
+            inputStr = inputStr.split(/\n/)
+            const dataLength = inputStr[0]
+            const data = inputStr.slice(1)
+            
+            const min = Math.min.apply(null, data)
+            const max = Math.max.apply(null, data)
+            return (max + min) / 2
+        }
+        
+        function gradeAnswer(inputStr) {
+            inputStr = inputStr.split(/\n/)
+            const dataLength = inputStr[0]
+            const data = inputStr.slice(1).sort((a, b) => a - b)
+            
+            let complaintSum = 0
+            for(let i = 1; i <= dataLength; i++) {
+                complaintSum += Math.abs(i - data[i - 1])
+            }
+            
+            return complaintSum
+        }
+        console.log("grade", gradeWrong(input3), gradeAnswer(input3))
+        
+        const input4 = `3
+6 8 9
+5
+2 5 2 4 7`
+        
+        function winterShip(inputStr) {
+            inputStr = inputStr.split(/\n/)
+            const craneNum = +inputStr[0]
+            const cranes = inputStr[1].split(/ /).map(_=>+_).sort((a, b) => b - a)
+            const boxNum = +inputStr[2]
+            const boxes = inputStr[3].split(/ /).map(_=>+_).sort((a, b) => b - a)
+            console.log(cranes, boxes)
+            
+            let count = 0
+            let craneIdx = 0
+            for(let i = 0; i < boxes.length; i++) {
+                if(i + 1 > craneNum) {
+                    craneIdx = (i + 1) % craneNum - 1
+                    count = parseInt((i + 1) % craneNum)
+                } else {
+                    craneIdx = i 
+                }
+                
+                // console.log(i + 1, craneIdx, craneNum, count)
+                
+                if(boxes[i] <= cranes[craneIdx]) {
+                    continue
+                } else {
+                    break
+                }
+            }
+            
+            return count
+        }
+        
+        function winterShipAnswer(inputStr) {
+            console.groupCollapsed("winterShipAnswer")
+            inputStr = inputStr.split(/\n/)
+            const craneNum = +inputStr[0]
+            const cranes = inputStr[1].split(/ /).map(_=>+_).sort((a, b) => b - a)
+            const boxNum = +inputStr[2]
+            const boxes = inputStr[3].split(/ /).map(_=>+_).sort((a, b) => b - a)
+            
+            // 모든 박스를 옮길 수 없는 경우
+            if(Math.max.apply(null, boxes) > Math.max.apply(null, cranes)) {
+                return -1
+            }            
+            
+            let count = 0, result = 0
+            
+            // 각 크레인이 현재 옮겨야 하는 박스의 번호 (0부터 시작)
+            const pos = (new Array(craneNum)).fill(0)
+            // 각 박스를 옮겼는지 여부
+            const moved = (new Array(boxNum)).fill(false)
+            
+            while(true) {
+                // 박스를 다 옮겼다면 종료
+                if(count == boxNum) {
+                    break
+                }
+                
+                // 모든 크레인에 대해 각각 처리
+                for(let i = 0; i < craneNum; i++) {
+                    while(pos[i] < boxNum) {
+                        console.log("pos", JSON.stringify(pos), count)
+                        console.log("moved", JSON.stringify(moved), i)
+                        
+                        // 아직 안 옮긴 박스 중에서, 옮길 수 있는 박스를 만날 때까지 반복
+                        if(!moved[pos[i]] && cranes[i] >= boxes[pos[i]]) {
+                            moved[pos[i]] = true
+                            pos[i] += 1
+                            count += 1
+                            break
+                        }
+                        pos[i] += 1
+                        
+                    }
+                }
+                result += 1
+                
+            }
+            
+            console.log(cranes, boxes, pos, moved)
+            console.groupEnd()
+            
+            return result
+        }
+        console.log("winterShip", winterShip(input4), winterShipAnswer(input4))
+    </script>
+</body>
+</html>
