@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+
+<body>
+    https://www.acmicpc.net/problem/1260
+    https://www.acmicpc.net/problem/1697
+    <script>
+        function dpTableMaker(colFill, colNum, rowNum) {
+            const array = Array(rowNum).fill(null).map(() => Array(colNum).fill(colFill));
+
+            return array
+        }
+
+        const input1 = `4 5 1
+1 2
+1 3
+1 4
+2 4
+3 4`
+        const input2 = `5 5 3
+5 4
+5 2
+1 2
+3 4
+3 1`
+        const input3 = `1000 1 1000
+999 1000`
+
+        function bfsAndDfs1(inputStr) {
+            console.groupCollapsed("BFS & DFS 1")
+            
+            const spl = inputStr.split(/\n/)
+            const info = spl[0].split(/ /)
+            const n = +info[0]
+            const m = +info[1]
+            const v = +info[2]
+            const cases = spl.slice(1)
+
+            const adj = (_ => {
+                return Array(n + 1).fill(null).map(() => {
+                    return []
+                })
+            })();
+
+            for (let i = 0; i < m; i++) {
+                const x = +cases[i].split(/ /)[0]
+                const y = +cases[i].split(/ /)[1]
+                // console.log(x, y, adj[x], adj[y], m)
+                adj[x].push(y)
+                adj[y].push(x)
+            }
+
+            // 정점 번호가 낮은 것부터 방문하라 했으므로 오름차순 정렬
+            for (let el of adj) {
+                el.sort((a, b) => a - b)
+            }
+
+            console.log(adj)
+
+            const dfsVisited = (new Array(n + 1)).fill(false)
+            const dfsArr = []
+            dfs(v)
+
+            // 스택 사용
+            function dfs(v) {
+                dfsArr.push(v)
+                dfsVisited[v] = true
+                console.log("dfs adj", adj[v])
+                for (let el of adj[v]) {
+                    if(!dfsVisited[el]) {
+                        dfs(el)
+                    }
+                }
+
+            }
+
+            const bfsVisited = (new Array(n + 1)).fill(false)
+            const bfsArr = []
+            bfs(v)
+
+            function bfs(v) {
+                const dq = [v]
+                console.log(v)
+                while (dq.length != 0) {
+                    v = dq.shift()
+                    if (!bfsVisited[v]) {
+                        bfsVisited[v] = true
+                        bfsArr.push(v)
+                        for(let el of adj[v]) {
+                            if(!bfsVisited[el]) {
+                                dq.push(el)
+                            }
+                        }
+                    }
+                }
+            }
+            console.groupEnd()
+            return {
+                dfsArr,
+                bfsArr
+            }
+
+        }
+        console.log(bfsAndDfs1(input1))
+        console.log(bfsAndDfs1(input2))
+        console.log(bfsAndDfs1(input3))
+        
+        // BFS
+        function hideAndSeek(inputStr) {
+            const spl = inputStr.split(/ /)
+            const n = +spl[0]
+            const k = +spl[1]
+            
+            const MAX = 100001
+            const array = (new Array(MAX)).fill(0)
+            
+            const bfs = _ => {
+                const dq = [n]
+                while(dq.length != 0) {
+                    const nowPos = dq.shift()
+                    if(nowPos == k) {
+                        return array[nowPos]
+                    }
+                    for(let nextPos of [nowPos - 1, nowPos + 1, nowPos * 2]) {
+                        // console.log(!array[nextPos])
+                        // 범위 안에 포함되어 있고 방문하지 않았다면
+                        if(0 <= nextPos && nextPos <= MAX && !array[nextPos]) {
+                            array[nextPos] = array[nowPos] + 1
+                            dq.push(nextPos)
+                        }
+                    }
+                }
+            }
+            
+            return bfs()
+        }
+        console.log("hideAndSeek", hideAndSeek("5 17"))
+    </script>
+</body></html>
