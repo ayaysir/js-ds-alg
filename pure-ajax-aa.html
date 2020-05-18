@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="app"></div>
+    <script>
+        const $target = document.getElementById("app")
+
+        const multiCreateElement = (elStr, num) => {
+            const arr = []
+            for (let i = 0; i < num; i++) {
+                arr[i] = document.createElement(elStr)
+            }
+            return arr
+        }
+
+        const multiAppendChild = ($parent, elArr) => {
+            for (let el of elArr) {
+                $parent.appendChild(el)
+            }
+        }
+
+        const $inputText = document.createElement('input')
+        $inputText.setAttribute("placeholder", "인풋")
+        $inputText.setAttribute("id", "name")
+        $inputText.onkeyup = e => {
+            if (e.keyCode == 13) {
+                postTest($inputText.value, "leader")
+            }
+        }
+        multiAppendChild($target, [$inputText, document.createElement("hr")])
+
+        const justFunc = data => {
+
+            const $title = document.createElement('h3')
+            $title.innerText = data.ad.company
+            $target.appendChild($title)
+
+            const person = data.data
+            const $table = document.createElement('table')
+            const $trHead = document.createElement('tr')
+            const headArr = ["id", "name", "avatar"]
+            for (let headTitle of headArr) {
+                const $th = document.createElement('th')
+                $th.innerText = headTitle
+                $trHead.appendChild($th)
+            }
+            $table.appendChild($trHead)
+
+            for (let row of person) {
+                //console.log(row.avatar, row.email, row.first_name, row.id, row.last_name)
+                const avatar = row.avatar
+                const email = row.email
+                const firstName = row.first_name
+                const lastName = row.last_name
+                const id = row.id
+
+                const $trContent = document.createElement('tr')
+                const $tds = multiCreateElement('td', 3)
+                $tds[0].innerText = id
+                $tds[1].innerHTML = `<a href="mailto:${email}">${firstName} ${lastName}</a>`
+                $tds[2].innerHTML = `<img src="${avatar}">`
+                multiAppendChild($trContent, $tds)
+                $table.appendChild($trContent)
+
+            }
+
+            $target.appendChild($table)
+
+        }
+
+        const postTest = async (name, job) => {
+            //            fetch("https://reqres.in/api/users", {
+            //                method: "post",
+            //                // 헤더가 없으면 post가 안됨
+            //                headers: {
+            //                    'Content-Type': 'application/json'
+            //                },
+            //                body: JSON.stringify({
+            //                    "name": name,
+            //                    "job": job
+            //                })
+            //            }).then(resp => {
+            //                console.log(resp)
+            //                return resp.json()
+            //            }).then(data => {
+            //                alert(JSON.stringify(data))
+            //            })
+            const fetchObj = {
+                method: "post",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    "name": name,
+                    "job": job
+                })
+            }
+
+            // then을 하나의 const 변수에 대응
+            const init = await fetch("https://reqres.in/api/users", fetchObj)
+            const data = await init.json()
+            alert(JSON.stringify(data))
+
+        }
+
+
+        //        fetch("https://reqres.in/api/users?page=2", {
+        //            method: "get"
+        //        }).then(resp => {
+        //            const respJson = resp.json()
+        //            console.log("resp", resp, respJson)
+        //            return respJson // [[PromiseValue]]를 꺼내 다음 then으로 전송
+        //        }).then(data => {
+        //            console.log("data", data)
+        //            justFunc(data)
+        //        }).catch(excResp => {
+        //            console.log(excResp)
+        //        })
+
+        (async function() {
+            try {
+                const init = await fetch("https://reqres.in/api/users?page=2", {
+                    method: "get"
+                })
+                const data = await init.json()
+                console.log(data)
+                justFunc(data)
+            } catch(exc) {
+                console.warn(exc)
+            }
+
+        })();
+    </script>
+</body></html>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+    https://www.acmicpc.net/problem/9663
+    https://www.acmicpc.net/problem/1987
+    <script>
+        function nQueen(n) {
+            console.groupCollapsed("nQueen", n)
+            const row = (new Array(n)).fill()
+            let result = 0
+            
+            // n번째 행에서 놓은 queen에 대해 검증
+            const check = x => {
+                // 이전 행에서 놓았던 모든 queen들을 확인
+                // 현재 행 row[x], 이전 행 row[i]
+                for(let i = 0; i < x; i++) {
+                    // 위 혹은 대각선을 확인
+                    if(row[x] == row[i]) {
+                        return false
+                    }
+                    if(Math.abs(row[x] - row[i]) == x - i) {
+                        return false
+                    }
+                }
+                return true
+            }
+            
+            const dfs = x => {
+                console.log("dfs", x)
+                if(x == n) {
+                    result += 1
+                } else {
+                    // x번째 행의 각 열에 queen을 둔다고 가정
+                    for(let i = 0; i < n; i++) {
+                        row[x] = i
+                        // 해당 위치에 queen을 둬도 괜찮은 경우
+                        if(check(x)) {
+                            // 다음 행으로 넘어가기
+                            dfs(x + 1)
+                        }
+                    }
+                }
+            }
+            
+            dfs(0)
+            console.groupEnd()
+            
+            return result
+        }
+        console.log(nQueen(8))
+        
+        const input2 = `2 4
+CAAB
+ADCB`
+        function alphabet(spl) {
+            console.groupCollapsed("alphabet")
+            spl = spl.split(/\n/)
+            const [r, c] = spl[0].split(/ /).map(_=>+_)
+            const field = []
+            for(let el of spl.slice(1)) {
+                field.push(el.split(''))
+            }
+            
+            console.log(r, c, field)
+            
+            // 이동 좌표 (상하좌우)
+            const dx = [-1, 1, 0, 0]
+            const dy = [0, 0, -1, 1]
+            
+            
+            
+            let result = 0
+            const bfs = (x, y) => {
+                // 동일한 경우 한 번만 계산하기 위해
+                const q = new Set()
+                q.add([x, y, field[x][y]])
+                
+                while(q.size != 0) {
+                    const pop = Array.from(q).pop()
+                    q.delete(pop)
+                    
+                    // 가장 긴 이동거리 저장
+                    result = Math.max(result, pop[2].length)
+                    
+                    // 네 방향으로 이동하는 경우를 각각 확인
+                    for(let i = 0; i < 4; i++) {
+                        const nx = pop[0] + dx[i]
+                        const ny = pop[1] + dy[i]
+                        console.log(nx, ny, pop[2])
+                        
+                        // 이동항할 수 있는 위치이면서, 새로운 알파벳인 경우
+                        const con = [0 <= nx,
+                              nx < r,
+                              0 <= ny,
+                              ny < c]
+                        if(nx >= 0 && ny >= 0) {
+                           try {con.push(pop[2].indexOf(field[nx][ny]) == -1)
+                           } catch(ex) {
+                               console.log(ex.message)
+                               break
+                           }
+                        }
+                        if(con[0] && con[1] && con[2] && con[3] && con[4]) {
+                            q.add([nx, ny, pop[2] + field[nx][ny]])
+                        }
+                    }
+                }
+                
+            }
+            
+            bfs(0, 0)
+            console.groupEnd()
+            return result
+            
+                                               
+        }
+        console.log("alphabet", alphabet(input2))
+        
+        const input3 = `4 6
+a t c i s w`
+        function password(spl) {
+            spl = spl.split(/\n/)
+            const len = +spl[0].split(/ /)[0]
+            const charLen = +spl[0].split(/ /)[1]
+            const chars = spl[1].split(/ /)
+            const vowels = ["a", "e", "i", "o", "u"]
+            
+            console.log(chars, vowels)
+            
+            const result = [],
+                  string = [],
+                  visited = [],
+                  outArr = []
+            
+            const combination = (array, length, index) => {
+                // 길이가 length인 모든 조합 찾기
+                if(string.length == length) {
+                    result.push(JSON.parse(JSON.stringify(string)))
+                }
+                
+                // 각 원소를 한 번씩만 뽑도록 구성
+                for(let i = index; i < array.length; i++) {
+                    if(visited.indexOf(i) != -1) {
+                        continue
+                    }
+                    string.push(array[i])
+                    visited.push(i)
+                    combination(array, length, i + 1)
+                    string.pop()
+                    visited.pop()
+                }
+                
+            }
+            
+            chars.sort((a, b) => {
+                return a > b ? 1 : -1
+            })
+            combination(chars, len, 0)
+            
+            // console.log(JSON.stringify(chars), result)
+            
+            // 길이가 len인 모든 조합 확인
+            for(let pwd of result) {
+                // 모음 개수 세기
+                let vowelCount = 0
+                for(let c of pwd) {
+                    if(vowels.indexOf(c) != -1) {
+                        vowelCount += 1
+                    }
+                }
+                
+                // 최소 1개 모음, 최소 2개 자음 있는 경우
+                if(vowelCount >= 1 && vowelCount <= len - 2) {
+                    outArr.push(pwd.join(''))
+                }
+            }
+            
+            return outArr
+        }
+        console.log("password", password(input3))
+    </script>
+</body>
+</html>

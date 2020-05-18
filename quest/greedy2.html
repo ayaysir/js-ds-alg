@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+    https://www.acmicpc.net/problem/2212
+    https://www.acmicpc.net/problem/1461
+    <script src="./../js/heap.js"></script>
+    <script>
+        
+        const input1 = `6
+2
+1 6 9 3 6 7`
+        
+        function sensor(inputStr) {
+            inputStr = inputStr.split(/\n/)
+            const n = +inputStr[0]
+            const k = +inputStr[1]
+            const coords = inputStr[2].split(/ /).map(_=>+_)
+            
+            // console.log(n, k, coords)
+            
+            // 집중국의 수(k)가 n개 이상일 때
+            if(k > n) {
+                return 0
+            }
+            
+            // 센서의 위치 오름차순 정렬
+            coords.sort((a, b) => a - b)
+            
+            // 각 센서 간 거리를 계산하여 내림차순 정렬
+            const dist = []
+            for(let i = 1; i < n; i++) {
+                dist.push(coords[i] - coords[i - 1])
+            }
+            dist.sort((a, b) => b - a)
+            
+            // 가장 긴 거리부터 하나씩 제거
+            for(let i = 0; i < k - 1; i++) {
+                dist[i] = 0
+            }
+            
+            // dist 배열의 합계 출력
+            return dist.reduce((a, b) => a + b)
+        }
+        console.log("sensor", sensor(input1))
+        
+        const input2 = `7 2
+-37 2 -6 -39 -29 11 -28`
+        
+        function library(inpStr) {
+            inpStr = inpStr.split(/\n/)
+            const [n, m] = inpStr[0].split(/ /).map(_=>+_)
+            const coords = inpStr[1].split(/ /).map(_=>+_).sort((a, b) => a - b)
+            
+            const dist = []
+            for(let i = 1; i < n; i++) {
+                dist.push(coords[i] - coords[i - 1])
+            }
+            
+            // 가장 먼 책까지의 거리
+            const largestDist = Math.max(Math.max.apply(null, coords), -Math.min.apply(null, coords))
+            
+            // 최대 힙 사용
+            const positive = new MaxHeap()
+            const negative = new MaxHeap()
+            
+            for(let cd of coords) {
+                if(cd > 0) {
+                    positive.insert(cd)
+                } else {
+                    negative.insert(-cd)
+                }
+            }
+            
+            let result  = 0
+            
+            while(!positive.isEmpty()) {
+                // 한 번에 m개씩 옮길 수 있으므로 m개씩 빼내기
+                result += positive.pop()
+                for(let i = 1; i < m; i++) {
+                    if(!positive.isEmpty()) {
+                        positive.pop()
+                    }
+                }
+            }
+            
+            while(!negative.isEmpty()) {
+                // 한 번에 m개씩 옮길 수 있으므로 m개씩 빼내기
+                result += negative.pop()
+                for(let i = 1; i < m; i++) {
+                    if(!negative.isEmpty()) {
+                        negative.pop()
+                    }
+                }
+            }
+            
+            return (result * 2 - largestDist)
+            
+//            console.log(positive, negative)
+//            
+//            console.log(n, m, coords, dist, largestDist)
+//            
+            
+        }
+        console.log("library", library(input2))
+        
+        const input3 = `7
+1 6
+1 7
+3 2
+3 1
+2 4
+2 5
+6 1`
+        // 데드라인: 한 번에 최대 풀 수 있는 문제의 개수
+        function cupRamen(spl) {
+            spl = spl.split(/\n/)
+            
+            const cases = []
+            spl.slice(1).forEach((el, i) => {
+                
+                cases[i] = {
+                  deadline: +el.split(/ /)[0],
+                  ramen: +el.split(/ /)[1]
+                }
+            })
+            cases.sort((a, b) => a.deadline - b.deadline)
+            
+            const queue = new MinHeap()
+            
+            // console.log(cases, queue)
+            
+            for(let el of cases) {
+                // console.log(el)
+                queue.insert(el.ramen)
+                // 데드라인을 초과하는 경우 최소원소를 제거
+                if(el.deadline < queue.getSize()) {
+                    queue.pop()
+                }
+            }
+            
+            
+            return queue.getList().reduce((a, b) => a + b)
+            
+            
+            
+        }
+        
+        console.log("cupRamen", cupRamen(input3))
+        
+    </script>
+</body>
+</html>

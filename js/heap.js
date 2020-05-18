@@ -11,6 +11,14 @@ class Heap {
     getList() {
         return this.heapArr.slice(1)
     }
+    
+    getSize() {
+        return this.heapArr.slice(1).length
+    }
+    
+    isEmpty() {
+        return this.heapArr.slice(1).length == 0
+    }
 
     swap(idx1, idx2) {
         const temp = this.heapArr[idx1]
