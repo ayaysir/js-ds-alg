@@ -86,8 +86,52 @@
 
             return find(r, c, 0, 0, 0)
         }
+        
+        function z2(inputStr) {
+            /**
+            n, r, c = 2, 3, 1
 
-        console.log(z(input1), z(input2))
+def Z(size, r0, c0):
+    if size == 1:
+        return 0
+    size //= 2
+    for i in range(2):
+        for j in range(2):
+            if r0 < size * (i+1) and c0 < size * (j+1):
+                print((i*2+j), size*size, r0 - size*i, c0 - size*j)
+                return (i*2+j) * size*size + Z(size, r0 - size*i, c0 - size*j)
+            
+print(Z(2**n, r, c))
+            */
+            const arr = inputStr.split(/ /)
+            const n = parseInt(arr[0]),
+                r = parseInt(arr[1]),
+                c = parseInt(arr[2])
+            
+            const zz = (size, r, c) => {
+                if(size == 1) {
+                    return 0
+                }
+                size = parseInt(size / 2)
+                
+                for(let i = 0; i < 2; i++) {
+                    for(let j = 0; j < 2; j++) {
+                        const con1 = r < size * (i + 1),
+                              con2 = c < size * (j + 1)
+                        if(con1 && con2) {
+                            return (i * 2 + j) * size * size 
+                                + zz(size, r - size * i, c - size * j)
+                        }
+                    }
+                }
+            }
+            
+            return zz(Math.pow(2, n), r, c)
+        }
+
+        console.log("z1", z(input1), z(input2))
+        console.log("z2", z2(input1), z2(input2))
+        
         
         const input3 = `3
 3
