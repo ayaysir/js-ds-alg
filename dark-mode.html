@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+
+
+    <style>
+        html.darkmode {
+            background-color: black;
+            color: white;
+        }
+
+        /* 일반적인 경우(라이트-다크 모드 구분없이) */
+        #title {
+            color: black;
+        }
+
+        /* 다크 모드인 경우 */
+        html.darkmode #title {
+            color: red;
+        }
+
+    </style>
+
+</head>
+
+<body>
+    <h3 id="title">title</h3>
+    <p id="light-dark">browser-mode: <span id="current-mode"></span></p>
+    <input type="checkbox" id="chk-user-mode"><label for="chk-user-mode">사용자 지정 다크모드</label>
+    <input type="radio" name="radio-dark" value="dark" disabled> dark <input type="radio" value="light" name="radio-dark" disabled> light
+    <script>
+        function getPrefersDark() {
+            console.log(window.matchMedia('(prefers-color-scheme: Dark)'))
+            return window.matchMedia && window.matchMedia('(prefers-color-scheme: Dark)').matches
+        }
+
+        function setDarkmode(isOn = true) {
+            const currentMode = document.getElementById("current-mode")
+            if (isOn) {
+                document.getElementsByTagName("html")[0].classList.add("darkmode")
+                currentMode.innerHTML = "dark"
+            } else {
+                document.getElementsByTagName("html")[0].classList.remove("darkmode")
+                currentMode.innerHTML = "light"
+            }
+        }
+
+
+        const classList = document.getElementsByTagName("html")[0].classList
+        const prefersDark = getPrefersDark()
+        document.getElementById("title").textContent = prefersDark ? "System: Dark" : "System: Light"
+
+        const radio = document.querySelectorAll("input[name=radio-dark]")
+        const chkBox = document.querySelector("#chk-user-mode")
+
+
+        if (!localStorage.getItem("user-dark")) {
+            localStorage.setItem("user-dark", "no")
+        }
+
+        if (localStorage.getItem("user-dark") === "no" && prefersDark) {
+            setDarkmode()
+            radio[0].checked = true
+        } else {
+            localStorage.getItem("user-dark") === "dark" ? setDarkmode() : setDarkmode(false)
+            chkBox.checked = true
+            radio.forEach(el => {
+                if (el.value === localStorage.getItem("user-dark")) {
+                    el.checked = true
+                }
+            })
+        }
+
+        chkBox.onclick = e => {
+            if (e.target.checked) {
+                localStorage.setItem("user-dark", "yes")
+                radio.forEach(el => {
+                    el.disabled = false
+                })
+            } else {
+                localStorage.setItem("user-dark", "no")
+                radio.forEach(el => {
+                    el.disabled = true
+                    if(prefersDark && el.value === "dark") {
+                        el.checked = true
+                    } else {
+                        el.chekced = true
+                    }
+                })
+                setDarkmode(prefersDark)
+                
+            }
+        }
+
+        radio.forEach(el => {
+            el.addEventListener("change", e => {
+                if (localStorage.getItem("user-dark") === "no") {
+                    return
+                }
+
+                if (el.value === "dark") {
+                    setDarkmode()
+                    localStorage.setItem("user-dark", "dark")
+                } else {
+                    setDarkmode(false)
+                    localStorage.setItem("user-dark", "light")
+                }
+            })
+        })
+
+    </script>
+</body>
+
+</html>
