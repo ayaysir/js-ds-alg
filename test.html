@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        function test(description, cbFunc) {
+            cbFunc()
+        }
+
+        function expect(anything) {
+            const type = typeof anything
+            const expectedValue = (type == "function") ? anything() : anything
+            return {
+                toEqual(toEqualValue) {
+                    console.log(`type: ${type}, test: ${expectedValue === toEqualValue}`)
+                }
+            }
+        }
+
+        test("case 1", () => {
+            expect(getBirthYear("843853-1111111")).toEqual(1984)
+        })
+        test("case 2", () => {
+            expect(getBirthYear("779483-3333333")).toEqual(2077)
+        })
+        test("case 3", () => {
+            expect(getBirthYear("779483-5555555")).toEqual(0)
+        })
+        test("case 4", () => {
+            expect(getBirthYear("asdfasdf")).toEqual(0)
+        })
+        test("case 5", () => {
+            expect(getBirthYear({"k": 1990})).toEqual(0)
+        })
+        test("case 6", () => {
+            expect(getBirthYear(9999991111111)).toEqual(1999)
+        })
+
+
+        // 주민번호로 연도 가져오기, 1, 2: 19xx 3, 4: 20xx
+        function getBirthYear(jumin) {
+            const type = typeof jumin
+            if(type != "string" && type != "number")    return 0
+            
+            jumin = ("" + jumin).replace(/[-\s]/g, "")
+            if(!jumin[6].match(/[1234]/))   return 0
+            
+            return parseInt( (jumin[6].match(/[34]/) ? "20" : "19") + jumin.substr(0, 2) )
+            
+        }
+    </script>
+</body></html>
