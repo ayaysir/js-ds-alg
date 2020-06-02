@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        const unsortedArr = [55, 7, 78, 9, 12, 42, 6]
+
+        // 배열은 주소값이 넘어오므로 여기서 바꾸면 그 배열이 바뀜
+        function swap(arr, idx1, idx2) {
+            const temp = arr[idx1]
+            arr[idx1] = arr[idx2]
+            arr[idx2] = temp
+        }
+
+        // 이중 반복문, 외부는 일반, 내부는 1부터 len - i 까지, j -1 > j 이면 스왑
+        function bubbleSort(arr) {
+            arr = arr.slice(0)
+            for (let i = 0; i < arr.length; i++) {
+                for (let j = 1; j < arr.length - i; j++) {
+                    if (arr[j - 1] > arr[j]) swap(arr, j, j - 1)
+                }
+            }
+            return arr
+        }
+
+        // 이중 반복문, 외부는 0부터 len - 1까지, 내부는 i+1 부터 len까지 최소값을 찾으며, 최소값 인덱스를 저장, 외부 반복 1회당 i와 최소값 인덱스를 스왑
+        function selectionSort(arr) {
+            arr = arr.slice(0)
+            for (let i = 0; i < arr.length - 1; i++) {
+                let minIdx = i
+                for (let j = i + 1; j < arr.length; j++) {
+                    if (arr[j] < arr[minIdx]) minIdx = j
+                }
+                swap(arr, i, minIdx)
+            }
+            return arr
+        }
+
+        function insertSort(arr) {
+            arr = arr.slice(0)
+
+            for (let i = 1; i < arr.length; i++) {
+                const temp = arr[i]
+                let j
+                for (j = i - 1; j >= 0; j--) {
+                    if (arr[j] <= temp) break
+                    arr[j + 1] = arr[j] // 한 칸씩 뒤로 밀기
+                }
+                // j는 -1까지 떨어질 수 있음
+                arr[j + 1] = temp
+            }
+
+            return arr
+        }
+
+        function mergeSort(arr) {
+            arr = arr.slice(0)
+
+            const merger = (leftArr, rightArr) => {
+                const mergedArr = []
+                let leftPoint = 0,
+                    rightPoint = 0
+
+                // case1 - left/right의 포인터가 둘 다 비교하는 배열 내에 있는 경우
+                while (leftArr.length > leftPoint && rightArr.length > rightPoint) {
+                    if (leftArr[leftPoint] <= rightArr[rightPoint]) {
+                        mergedArr.push(leftArr[leftPoint])
+                        leftPoint += 1
+                    } else {
+                        mergedArr.push(rightArr[rightPoint])
+                        rightPoint += 1
+                    }
+                }
+
+                // case2 - left 포인터는 아직 left 배열 내에 있는데 right 배열에는 비교 대상이 없는 경우
+                // 예를 들어: left는 [0, 2, 5, ...], right는 [1] 인 경우를 생각하면 됨
+                while (leftArr.length > leftPoint) {
+                    mergedArr.push(leftArr[leftPoint])
+                    leftPoint += 1
+                }
+
+                // case3 - case 2의 반대상황
+                // 예를 들어: left는 [1], right는 [0, 2, 5, ...] 인 경우를 생각하면 됨
+                while (rightArr.length > rightPoint) {
+                    mergedArr.push(rightArr[rightPoint])
+                    rightPoint += 1
+                }
+
+                return mergedArr
+            }
+
+            const main = arr => {
+                if (arr.length <= 1) {
+                    return arr
+                }
+
+                const mid = parseInt(arr.length / 2)
+                const left = main(arr.slice(0, mid))
+                const right = main(arr.slice(mid, arr.length))
+
+                return merger(left, right)
+            }
+
+            // 메인 함수 실행
+            return main(arr)
+        }
+
+        function quickSort(arr) {
+            arr = arr.slice(0)
+            
+            const main = arr => {
+
+                if(arr.length <= 1)    return arr;
+
+                const pivot = arr[0], 
+                    leftArr = [],
+                    rightArr = []
+
+                for (let i = 1; i < arr.length; i++) {
+                    if (arr[i] <= pivot) {
+                        leftArr.push(arr[i])
+                    } else {
+                        rightArr.push(arr[i])
+                    }
+                }
+
+                return main(leftArr).concat([pivot], main(rightArr))
+            }
+            
+            
+            return main(arr)
+        }
+
+        console.log(bubbleSort(unsortedArr))
+        console.log(selectionSort(unsortedArr))
+        console.log(insertSort(unsortedArr))
+        console.log(mergeSort(unsortedArr))
+        console.log(quickSort(unsortedArr))
+    </script>
+</body></html>

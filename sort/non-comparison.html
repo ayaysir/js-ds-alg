@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <script>
+        const unsortedArr1 = [2, 0, 2, 0, 4, 1, 5, 5, 2, 0, 2, 4, 0, 4, 0, 3]
+
+        function countingSort(arr, k, forRadixSort) {
+            const outArr = (new Array(arr.length)).fill(-1)
+            const countArr = (new Array(k + 1)).fill(0)
+
+            for (let a of arr) {
+
+                if (forRadixSort) {
+
+                    a = getDigitByBase(a, forRadixSort.d, forRadixSort.base)
+                }
+
+                countArr[a] += 1
+            }
+
+            for (let i = 0; i < k; i++) {
+                countArr[i + 1] += countArr[i]
+            }
+
+            for (let i = arr.length - 1; i >= 0; i--) {
+                if(!forRadixSort) {
+                    
+                    const idx_c = countArr[arr[i]] - 1
+                    outArr[idx_c] = arr[i]
+                    countArr[arr[i]] -= 1
+                } else {
+                    const digit = getDigitByBase(arr[i], forRadixSort.d, forRadixSort.base)
+                    const idx_r = countArr[digit] - 1
+                    outArr[idx_r] = arr[i]
+                    countArr[digit] -= 1
+                }
+            }
+
+            return outArr
+
+        }
+
+        const unsortedArr2 = [125, 383, 274, 96, 0, 9, 81, 72]
+
+        // d: 자릿수 (1부터)
+        function getDigitByBase(num, d, base = 10) {
+            d -= 1
+            return Math.floor((num / Math.pow(base, d)) % base)
+        }
+
+        function radixSort(arr, base = 10) {
+            arr = arr.slice(0)
+            
+            const digit = (Math.max.apply(null, arr)+"").length
+            const outArr = []
+            
+            for(let d = 1; d <= digit; d++) {
+                arr = countingSort(arr, base - 1, {
+                    d,
+                    base
+                })
+            }
+            return arr
+        }
+
+        console.log(countingSort(unsortedArr1, 5))
+        console.log(radixSort(unsortedArr2))
+    </script>
+</body></html>
