@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="wrapper">
+        <table id="table-comment">
+            <thead>
+                <th>번호</th>
+                <th>이름</th>
+                <th>코멘트</th>
+            </thead>
+            <tbody class="comment-list">
+
+            </tbody>
+        </table>
+    </div>
+    <script>
+        /** 테스트 라이브러리 흉내 함수 **/
+
+        function describe(description, cbFunc) {
+            console.log(description)
+            cbFunc()
+        }
+
+        function it(description, cbFunc) {
+            console.log(description)
+            cbFunc(description)
+        }
+
+        function expect(anything) {
+            const type = typeof anything
+            const expectedValue = (type == "function") ? anything() : anything
+            return {
+                toEqual(toEqualValue) {
+                    console.log(` └ type: ${type}, input: ${toEqualValue}, test: ${expectedValue === toEqualValue}`)
+                },
+                toBeGreaterThan(toBeGTValue) {
+                    console.log(` └ type: ${type}, input: ${toBeGTValue}, test: ${expectedValue <= toBeGTValue}`)
+                }
+            }
+        }
+        /*************/
+        const inMemoryDB = [{
+            id: 1,
+            name: "김갑순",
+            comment: "안녕하세요.",
+            password: 1234
+        }]
+
+        function render() {
+            const $list = document.querySelector("#table-comment .comment-list")
+            for (let el of inMemoryDB) {
+                const $tr = document.createElement("tr")
+                const id = document.createElement("td")
+                id.textContent = el.id
+                const name = document.createElement("td")
+                name.textContent = el.name
+                const comment = document.createElement("td")
+                comment.textContent = el.comment
+
+                $tr.appendChild(id)
+                $tr.appendChild(name)
+                $tr.appendChild(comment)
+                $list.appendChild($tr)
+            }
+        }
+
+
+        /*************/
+
+        describe("Comment", () => {
+            it("성공적으로 렌더링되어야 합니다.", () => {
+                render()
+                const $list = document.querySelector("#table-comment .comment-list")
+                expect($list.childElementCount).toBeGreaterThan(1)
+            })
+            it("코멘트를 남길 수 있어야 합니다.", () => {
+                expect(1).toEqual(1)
+            })
+            it("코멘트를 변경할 수 있어야 합니다.", () => {
+                expect("1").toEqual("1")
+            })
+            it("코멘트를 삭제할 수 있어야 합니다.", () => {
+                expect(true).toEqual(false)
+            })
+        })
+        
+        var ducks = ["첫째 오리", "둘째 오리", "셋째 오리", "넷째 오리", "다섯째 오리"],
+            delaySec = 1000
+
+        for (let i in ducks) {
+            setTimeout(() => {
+                console.log(ducks[i])
+            }, i * delaySec)
+
+        }
+
+    </script>
+</body>
+
+</html>
