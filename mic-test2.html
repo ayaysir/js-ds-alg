@@ -22,20 +22,16 @@
         const gainNode = audioCtx.createGain()
         const biquadFilter = audioCtx.createBiquadFilter()
 
-
         function makeSound(stream) {
             const source = audioCtx.createMediaStreamSource(stream)
 
             source.connect(analyser)
-            analyser.connect(distortion)
-            distortion.connect(biquadFilter)
-            biquadFilter.connect(gainNode)
-            gainNode.connect(audioCtx.destination) // connecting the different audio graph nodes together
-            
-//            console.log(biquadFilter.frequency)
-//            setInterval(()=>{
-//                console.log(biquadFilter.gain)
-//            },100)
+            //            analyser.connect(distortion)
+            //            distortion.connect(biquadFilter)
+            //            biquadFilter.connect(gainNode)
+            //            gainNode.connect(audioCtx.destination) // connecting the different audio graph nodes together
+            analyser.connect(audioCtx.destination)
+
         }
 
         if (navigator.mediaDevices) {
@@ -51,9 +47,10 @@
 
                     const mediaRecorder = new MediaRecorder(stream)
 
-                    makeSound(stream)
 
                     record.onclick = function() {
+                        audioCtx.resume()
+                        makeSound(stream)
                         mediaRecorder.start()
                         console.log(mediaRecorder.state)
                         console.log("recorder started")
@@ -62,6 +59,7 @@
                     }
 
                     stop.onclick = function() {
+                        audioCtx.suspend()
                         mediaRecorder.stop()
                         console.log(mediaRecorder.state)
                         console.log("recorder stopped")
@@ -112,8 +110,5 @@
                     console.log('The following error occurred: ' + err)
                 })
         }
-
     </script>
-</body>
-
-</html>
+</body></html>
