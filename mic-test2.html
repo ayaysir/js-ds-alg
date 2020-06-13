@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+
+<body>
+    <button id="record">record</button>
+    <button id="stop">stop</button>
+    <div id="sound-clips"></div>
+    <script>
+        const record = document.getElementById("record")
+        const stop = document.getElementById("stop")
+        const soundClips = document.getElementById("sound-clips")
+
+        const audioCtx = new(window.AudioContext || window.webkitAudioContext)() // 오디오 컨텍스트 정의
+
+        const analyser = audioCtx.createAnalyser()
+        const distortion = audioCtx.createWaveShaper()
+        const gainNode = audioCtx.createGain()
+        const biquadFilter = audioCtx.createBiquadFilter()
+
+
+        function makeSound(stream) {
+            const source = audioCtx.createMediaStreamSource(stream)
+
+            source.connect(analyser)
+            analyser.connect(distortion)
+            distortion.connect(biquadFilter)
+            biquadFilter.connect(gainNode)
+            gainNode.connect(audioCtx.destination) // connecting the different audio graph nodes together
+            
+//            console.log(biquadFilter.frequency)
+//            setInterval(()=>{
+//                console.log(biquadFilter.gain)
+//            },100)
+        }
+
+        if (navigator.mediaDevices) {
+            console.log('getUserMedia supported.')
+
+            const constraints = {
+                audio: true
+            }
+            let chunks = []
+
+            navigator.mediaDevices.getUserMedia(constraints)
+                .then(function(stream) {
+
+                    const mediaRecorder = new MediaRecorder(stream)
+
+                    makeSound(stream)
+
+                    record.onclick = function() {
+                        mediaRecorder.start()
+                        console.log(mediaRecorder.state)
+                        console.log("recorder started")
+                        record.style.background = "red"
+                        record.style.color = "black"
+                    }
+
+                    stop.onclick = function() {
+                        mediaRecorder.stop()
+                        console.log(mediaRecorder.state)
+                        console.log("recorder stopped")
+                        record.style.background = ""
+                        record.style.color = ""
+                    }
+
+                    mediaRecorder.onstop = function(e) {
+                        console.log("data available after MediaRecorder.stop() called.")
+
+                        const clipName = prompt('Enter a name for your sound clip')
+
+                        const clipContainer = document.createElement('article')
+                        const clipLabel = document.createElement('p')
+                        const audio = document.createElement('audio')
+                        const deleteButton = document.createElement('button')
+
+                        clipContainer.classList.add('clip')
+                        audio.setAttribute('controls', '')
+                        deleteButton.innerHTML = "Delete"
+                        clipLabel.innerHTML = clipName
+
+                        clipContainer.appendChild(audio)
+                        clipContainer.appendChild(clipLabel)
+                        clipContainer.appendChild(deleteButton)
+                        soundClips.appendChild(clipContainer)
+
+                        audio.controls = true
+                        const blob = new Blob(chunks, {
+                            'type': 'audio/ogg codecs=opus'
+                        })
+                        chunks = []
+                        var audioURL = URL.createObjectURL(blob)
+                        audio.src = audioURL
+                        console.log("recorder stopped")
+
+                        deleteButton.onclick = function(e) {
+                            evtTgt = e.target
+                            evtTgt.parentNode.parentNode.removeChild(evtTgt.parentNode)
+                        }
+                    }
+
+                    mediaRecorder.ondataavailable = function(e) {
+                        chunks.push(e.data)
+                    }
+                })
+                .catch(function(err) {
+                    console.log('The following error occurred: ' + err)
+                })
+        }
+
+    </script>
+</body>
+
+</html>
