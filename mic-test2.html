@@ -7,20 +7,22 @@
 </head>
 
 <body>
-    <button id="record">record</button>
-    <button id="stop">stop</button>
+    <input type=checkbox id="chk-hear-mic"><label for="chk-hear-mic">마이크 소리 듣기</label>
+    <button id="record">녹음</button>
+    <button id="stop">정지</button>
     <div id="sound-clips"></div>
     <script>
         const record = document.getElementById("record")
         const stop = document.getElementById("stop")
         const soundClips = document.getElementById("sound-clips")
+        const chkHearMic = document.getElementById("chk-hear-mic")
 
         const audioCtx = new(window.AudioContext || window.webkitAudioContext)() // 오디오 컨텍스트 정의
 
         const analyser = audioCtx.createAnalyser()
-        const distortion = audioCtx.createWaveShaper()
-        const gainNode = audioCtx.createGain()
-        const biquadFilter = audioCtx.createBiquadFilter()
+        //        const distortion = audioCtx.createWaveShaper()
+        //        const gainNode = audioCtx.createGain()
+        //        const biquadFilter = audioCtx.createBiquadFilter()
 
         function makeSound(stream) {
             const source = audioCtx.createMediaStreamSource(stream)
@@ -46,11 +48,17 @@
                 .then(function(stream) {
 
                     const mediaRecorder = new MediaRecorder(stream)
-
-
-                    record.onclick = function() {
-                        audioCtx.resume()
-                        makeSound(stream)
+                    
+                    chkHearMic.onchange = e => {
+                        if(e.target.checked == true) {
+                            audioCtx.resume()
+                            makeSound(stream)
+                        } else {
+                            audioCtx.suspend()
+                        }
+                    }
+                    
+                    record.onclick = () => {
                         mediaRecorder.start()
                         console.log(mediaRecorder.state)
                         console.log("recorder started")
@@ -58,8 +66,7 @@
                         record.style.color = "black"
                     }
 
-                    stop.onclick = function() {
-                        audioCtx.suspend()
+                    stop.onclick = () => {
                         mediaRecorder.stop()
                         console.log(mediaRecorder.state)
                         console.log("recorder stopped")
@@ -67,10 +74,10 @@
                         record.style.color = ""
                     }
 
-                    mediaRecorder.onstop = function(e) {
+                    mediaRecorder.onstop = e => {
                         console.log("data available after MediaRecorder.stop() called.")
 
-                        const clipName = prompt('Enter a name for your sound clip')
+                        const clipName = prompt("오디오 파일 제목을 입력하세요.", new Date())
 
                         const clipContainer = document.createElement('article')
                         const clipLabel = document.createElement('p')
@@ -79,12 +86,12 @@
 
                         clipContainer.classList.add('clip')
                         audio.setAttribute('controls', '')
-                        deleteButton.innerHTML = "Delete"
+                        deleteButton.innerHTML = "삭제"
                         clipLabel.innerHTML = clipName
 
                         clipContainer.appendChild(audio)
                         clipContainer.appendChild(clipLabel)
-                        clipContainer.appendChild(deleteButton)
+                        clipLabel.appendChild(deleteButton)
                         soundClips.appendChild(clipContainer)
 
                         audio.controls = true
