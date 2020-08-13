@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+
+<body>
+    <img class="lazy-img" src="./loading.jpg" data-src="http://yoonbumtae.com/win7/img/Chrysanthemum.jpg" alt="">
+    <img class="lazy-img" src="./loading.jpg" data-src="http://yoonbumtae.com/win7/img/Desert.jpg" alt="">
+    <img class="lazy-img" src="./loading.jpg" data-src="http://yoonbumtae.com/win7/img/Hydrangeas.jpg" alt="">
+    <img class="lazy-img" src="./loading.jpg" data-src="http://yoonbumtae.com/win7/img/Jellyfish.jpg" alt="">
+    <img class="lazy-img" src="./loading.jpg" data-src="http://yoonbumtae.com/win7/img/Koala.jpg" alt="">
+    <img class="lazy-img" src="./loading.jpg" data-src="http://yoonbumtae.com/win7/img/Lighthouse.jpg" alt="">
+    <img class="lazy-img" src="./loading.jpg" data-src="http://yoonbumtae.com/win7/img/Penguins.jpg" alt="">
+    <img class="lazy-img" src="./loading.jpg" data-src="http://yoonbumtae.com/win7/img/Tulips.jpg" alt="">
+
+    <script>
+        // onload는 페이지의 모든 리소스가 로드 완료되었을 때 실행된다.
+        window.onload = () => {
+
+            const observerOption = {
+                root: null,
+                rootMargin: "0px 0px 30px 0px",
+                threshold: 0.2
+            }
+
+            // IntersectionObserver 인스턴스 생성
+            const io = new IntersectionObserver((entries, observer) => {
+
+                entries.forEach(entry => {
+
+                    // entry.isIntersecting: 특정 요소가 뷰포트와 20%(threshold 0.2) 교차되었으면
+                    if (entry.isIntersecting) {
+                        entry.target.src = entry.target.dataset.src
+                        observer.unobserve(entry.target)    // entry.target에 대해 관찰 종료
+                    }
+                })
+            }, observerOption)
+
+            // lazy-img 클래스 요소 순회
+            const lazyImgs = document.querySelectorAll(".lazy-img")
+            lazyImgs.forEach(el => {
+                io.observe(el)  // el에 대하여 관측 시작
+            })
+
+        }
+    </script>
+</body></html>
