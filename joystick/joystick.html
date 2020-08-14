@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        function solution(name) {
+            let answer = 0
+
+            console.group(name)
+
+            const CODE_A = "A".charCodeAt(0) // 65
+            const CODE_Z = "Z".charCodeAt(0) // 90
+
+            // turn(왼쪽, 오른쪽 버튼 누름): 최악의 경우 조이스틱 버튼을 오른쪽으로 name.length - 1 번만큼 눌러야 됨
+            let totalTurn = name.length - 1
+
+            for (let i = 0, len = name.length; i < len; i++) {
+
+                // A로부터 어떤 문자를 만들기 위해 눌러야 하는 조이스틱 연타(위, 아래) 수 
+                // 예) A에서 A를 만들기 위해서는 up 키는 65-65 = 0번만 누르면 되지만
+                // down 키는 (90-65)+1 = 26번을 눌러야 함
+                // pressDownCount에 1이 추가되는 이유는 A에서 Z로 넘어가기 위한 키 누름이 있기 때문 
+                const pressUpCount = name[i].charCodeAt(0) - CODE_A
+                const pressDownCount = CODE_Z - name[i].charCodeAt(0) + 1
+
+                // 누르는 수가 더 적은 쪽을 answer에 추가
+                answer += Math.min(pressUpCount, pressDownCount)
+
+                // ** A가 많을수록 역방향(왼쪽)이 유리, 적을수록 정방향이 유리 ** //
+
+                // 현재까지 이동한 수 (오른쪽) 
+                const currentTurn = i
+
+                // 역방향 이동으로 도착할 곳을 지정
+                // 끝이 A인 경우 len과 동일한 값이 나올 수 있음 -> toPressCount는 0이 됨
+                let nextTarget = currentTurn + 1
+                while (nextTarget < len && name[nextTarget] == "A") {
+                    nextTarget++
+                }
+
+                // 현재 위치 기준으로 역방향으로 눌러야 할 버튼 수
+                // 현재 위치 이후에 A만 있다면 0
+                let toPressCount = len - nextTarget
+
+                // 처음 위치에서 특정 문자까지 이동한 후 다시 돌아올 때 거리(currentReturn)
+                // 또는 특정 위치에서 nextTarget까지 간 거리(toPressCount) 중 짧은 거리 + toPressCount
+                // toPressCount가 0이라면 이것도 0
+                // 케이스에서 A가 없다면 모든 위치에서 currentTurn + toPressCount는 같음
+                const toPressCountWithReturn = Math.min(currentTurn, toPressCount) + toPressCount
+
+                // 현재까지 이동한 턴 + 추가로 눌러야할 횟수를 합한 것이 가장 작아야 최적의 방법
+                const currentCalcTurn = currentTurn + toPressCountWithReturn
+                totalTurn = Math.min(totalTurn, currentCalcTurn)
+
+                console.log(name[i], "currentTurn", currentTurn, 
+                            "nextTarget", nextTarget, 
+                            "toPressCount", toPressCount, 
+                            "toPressCountWithReturn", toPressCountWithReturn, 
+                            "currentCalcTurn", currentCalcTurn)
+
+            }
+
+            answer += totalTurn
+            console.log("totalTurn", totalTurn)
+            console.log("answer", answer)
+            console.groupEnd()
+
+            return answer
+        }
+
+        solution(prompt("enter name"))
+
+    </script>
+</body>
+
+</html>
