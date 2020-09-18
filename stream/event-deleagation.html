@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+    <ul id="item-box">
+        <li class="item">초기 요소 1</li>
+        <li class="item">초기 요소 2</li>
+        <li class="item">초기 요소 3</li>
+    </ul>
+    <button id="btn-add-item">아이템 추가</button>
+    <script>
+        const btnAddItem = document.querySelector("#btn-add-item")
+        const itemBox = document.querySelector("#item-box")
+        
+        let start = 4
+        
+        btnAddItem.addEventListener("click", event => {
+            for(let i = start; i <= start + 10; i++) {
+                const $li = document.createElement("li")
+                $li.classList.add("item")
+                $li.textContent = `동적 요소 ${i}`
+                itemBox.appendChild($li)
+            }
+            start += 10 + 1
+        })
+        
+        // 동적으로 추가되는 요소에는 이벤트가 할당되지 않는 코드
+//        const items = document.querySelectorAll(".item")
+//        items.forEach(el => {
+//            el.addEventListener("click", event => {
+//                console.log(event.target.textContent)
+//            })
+//        })
+        
+        // 이벤트 위임을 사용하여 동적 요소에도 이벤트가 할당되도록 한 코드
+        itemBox.addEventListener("click", event => {
+            console.log(event.target, event.currentTarget)
+            
+            const evTarget = event.target
+            if(evTarget.classList.contains("item")) {
+                console.log(evTarget.textContent)
+            }
+        })
+    </script>
+</body>
+</html>
