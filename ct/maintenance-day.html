@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        function solution(day, k) {
+            let answer = []
+            
+            const MONTHS = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+            
+            // month 증가시 일수 누적
+            let sumOfDay = 0
+            
+            // 1월부터 12월까지 순회
+            for(let i = 0, len = MONTHS.length; i < len; i++) {
+                
+                // 1월인 경우(else) day + k 더한 값에 1 빼기 -> 나머지를 통해 요일을 구하기 위함
+                // 예: day = 6(일요일), k = 1인 경우 6 + 1 - 1 = 6
+                // 예: day = 6(일요일), k = 1인 경우 6 + 25 - 1 = 30
+                if(i != 0)  sumOfDay += MONTHS[i - 1]
+                else    sumOfDay = day + k - 1
+            
+                // 
+                let currentDay = sumOfDay % 7
+                
+                if(currentDay == 5 || currentDay == 6)  answer.push(1)
+                else    answer.push(0)
+                
+            }
+            
+            return answer
+        }
+        
+        console.log(solution(6, 1))
+        console.log(solution(6, 25))
+        console.log(30%7)
+    </script>
+</body>
+</html>
