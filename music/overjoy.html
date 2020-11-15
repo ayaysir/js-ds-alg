@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+
+<body>
+   <button onclick="a()">t</button>
+    <script>
+        
+        const OSC_TYPE = "sawtooth"
+        
+        function a() {
+            // one context per document
+            var context = new(window.AudioContext || window.webkitAudioContext)();
+            
+            var osc = context.createOscillator(); // instantiate an oscillator
+            osc.type = OSC_TYPE // this is the default - also square, sawtooth, triangle
+            osc.frequency.value = 440; // Hz
+            osc.connect(context.destination); // connect it to the destination
+            osc.start(); // start the oscillator
+            osc.stop(context.currentTime + 2); // stop 2 seconds after the current time
+            
+            setTimeout(() => {
+                var osc2 = context.createOscillator(); // instantiate an oscillator
+                osc2.type = OSC_TYPE // this is the default - also square, sawtooth, triangle
+                osc2.frequency.value = 554.37; // Hz
+                osc2.connect(context.destination); // connect it to the destination
+                osc2.start(); // start the oscillator
+                osc2.stop(context.currentTime + 2); // stop 2 seconds after the current time
+            }, 0)
+            
+            setTimeout(() => {
+                var osc3 = context.createOscillator(); // instantiate an oscillator
+                osc3.type = OSC_TYPE // this is the default - also square, sawtooth, triangle
+                osc3.frequency.value = 659.26; // Hz
+                osc3.connect(context.destination); // connect it to the destination
+                osc3.start(); // start the oscillator
+                osc3.stop(context.currentTime + 2); // stop 2 seconds after the current time
+            }, 0)
+            
+            
+        }
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+
+<body>
+    <canvas id="game-canvas" width="400" height="400"></canvas>
+    <script>
+        
+        
+        const canvas = document.getElementById("game-canvas")
+        const ctx = canvas.getContext("2d")
+            
+        window.onload = () => {
+            document.addEventListener("keydown", keyPush)
+            
+            /*
+            Let's go and get that step that step set up as well as start off our game on interval timer
+            to call a game function 15 times every second.
+            게임 시작시 초당 15프레임 (fps) 으로 game 함수 호출
+            */
+            setInterval(game, 1000 / 15)
+        
+        }
+        
+        
+        /*
+        We also want to have our player positions.
+        Let start in the middle of the world. I'm thinking the middle work sitting at 20 by 20,
+        so grid size and tile count will be both be 20 cuz 10 times 20 is 400
+        px: 
+        */
+        let px = 0, py = 0
+        let gridSize = 20, tileCount = 20
+        
+        /*
+        Let's also have an apple X and an apple Y as our goal which will start at (15, 15) just to keep things simple.
+        */
+        let ax = 15, ay = 15
+        
+        /*
+        We're gonna have X velocity and Y velocity values for a snake part of the thing about snake game right(?)
+        is that you just push the keys to make the character move and it keeps on moving with momentum.
+        */
+        let xv = 0, yv = 0
+        
+        /*
+        We're gonna get a trail here for our trail hold on ou ever nee d an array for our player
+        because one of thins about a snake game right(?) is it keeps track of all previous positions
+        let's also keep a one called tail to be how long our tails supposed to be trail length
+        */
+        const trail = []
+        let tail = 5
+        
+        function game() {
+            /*
+            So player X has got a plus equal X velocity and then player Y has got a plus equal Y velocity
+            to implement some wrap for those so
+            */
+            px += xv
+            py += yv
+            
+            /*
+            If px's goes less than 0 some scene that games wrap
+            Some games the snake don't this game is going to wrap
+            */
+            if(px < 0) {
+                px = tileCount - 1
+            }
+            if(px > tileCount - 1) {
+                px = 0
+            }
+            if(py < 0) {
+                py = tileCount - 1
+            }
+            if(py > tileCount - 1) {
+                py = 0
+            }
+            
+            ctx.fillStyle = "black"
+            ctx.fillRect(0, 0, canvas.width, canvas.height)
+            
+            ctx.fillStyle = "lime"
+            for(let i = 0; i < trail.length; i++) {
+                // There's our x and y which were part of mechanics of snake games
+                ctx.fillRect(trail[i].x * gridSize, trail[i].y * gridSize, gridSize - 2, gridSize - 2)
+                
+                
+                // If you stepping on your tail, you're in trouble so we can do it really easily here by doing this
+                if(trail[i].x === px && trail[i].y === py) {
+                    console.log("initialized")
+                    tail = 5
+                }
+            }
+            
+            trail.push({x: px, y: py})
+            while(trail.length > tail) {
+                trail.shift()
+            }
+            
+            if(ax === px && ay === py) {
+                tail++
+                ax = Math.floor(Math.random() * tileCount)
+                ay = Math.floor(Math.random() * tileCount)
+            }
+            
+            ctx.fillStyle = "red"
+            ctx.fillRect(ax * gridSize, ay * gridSize, gridSize - 2, gridSize - 2)
+        }
+        
+        function keyPush(evt) {
+            // arrows keys and it's left and then clockwise
+            switch(evt.keyCode) {
+                case 37:
+                    xv = -1;
+                    yv = 0;
+                    break;
+                case 38:
+                    xv = 0;
+                    yv = -1;
+                    break;
+                case 39:
+                    xv = 1;
+                    yv = 0;
+                    break;
+                case 40:
+                    xv = 0;
+                    yv = 1;
+                    break;   
+            }
+        }
+    </script>
+</body>
+
+</html>

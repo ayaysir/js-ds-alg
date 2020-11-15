@@ -23,9 +23,10 @@
                 if(i != 0)  sumOfDay += MONTHS[i - 1]
                 else    sumOfDay = day + k - 1
             
-                // 
+                // 누적 일수를 7로 나눈 나머지가 해당 달 지급일의 요일
                 let currentDay = sumOfDay % 7
                 
+                // 토, 일이면 1 push, 아니면 0 push
                 if(currentDay == 5 || currentDay == 6)  answer.push(1)
                 else    answer.push(0)
                 

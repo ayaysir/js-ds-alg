@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        const text = `그런 미친년 밑에서 자랐으니 당연히 자식들도 미친놈년들이지 
+
+니 업보다 시발년아 뒤지고 싶으면 너도 그렇게 뒤져 사람 좆같게하지말고`
+        
+        const ar = text.split('\n')
+        
+        for(let i = 0, len = ar.length; i < len; i++) {
+            const cs = ar[i]
+            if(cs.length == 0)  continue
+            
+            const wla = []
+            let stq = ""
+            const sa = ar[i].split(' ')
+            console.log(sa)
+            
+            // shuffling
+            
+            sa.forEach(e => {
+                wla.push(e.length)
+                stq += e
+            })
+            
+            console.log(wla, stq)
+            
+        }
+        
+    </script>
+</body>
+</html>
