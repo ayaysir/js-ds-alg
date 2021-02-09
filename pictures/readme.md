@@ -7,3 +7,5 @@
 ![](./aws-s3-7.jpg)
 ![](./aws-s3-8.jpg)
 ![](./aws-s3-9.jpg)
+![](./aws-s3-10.jpg)
+![](./aws-s3-11.jpg)
