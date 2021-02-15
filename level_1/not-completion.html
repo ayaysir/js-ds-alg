@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        function solution(participant, completion) {
+            
+            const obj = {}
+            
+            for (let p of participant) {
+                obj[p] = obj[p] ? obj[p] + 1 : 1
+            }
+
+            for (let c of completion) {
+                obj[c] -= 1
+            }
+            
+            console.log(obj)
+
+            for (let key in obj) {
+                if (obj[key] == 1) {
+                    return key
+                }
+            }
+        }
+
+        const participant = ["marina", "josipa", "nikola", "vinko", "filipa"]
+        const completion = ["josipa", "filipa", "marina", "nikola"]
+        const result = solution(participant, completion)
+        console.log(result)
+    </script>
+</body>
+
+</html>
