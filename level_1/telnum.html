@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        const case1 = ["119", "976 74223", "11 9524421"]
+        const case2 = ["123", "456", "456", "78 9"]
+        const case3 = ["12", "1 23", "123 5", "567", "88"]
+        
+        function solution(phone_book) {
+            const hashMap = {}
+            
+            for(let phoneNumber of phone_book) {
+                hashMap[phoneNumber] = 1
+            }
+            
+            for(let phoneNumber of phone_book) {
+                let temp = ""
+                const phoneNumberWithoutSpace = phoneNumber.replace(/\s/g, "")
+                
+                for(let number of phoneNumberWithoutSpace) {
+                    temp += number
+                    console.log(number, temp, phoneNumberWithoutSpace)
+                    
+                    if(hashMap[temp] && temp != phoneNumberWithoutSpace) {
+                        return false
+                    }
+                }
+            }
+            
+            return true
+        }
+        
+        
+        
+        console.log(solution(case1),
+        solution(case2),
+        solution(case3))
+    </script>
+</body>
+
+</html>
