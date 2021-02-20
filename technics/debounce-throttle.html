@@ -19,7 +19,6 @@
             return function(...args) {
                 clearTimeout(timeout)
                 timeout = setTimeout(() => {
-                    console.log(this)
                     callback.apply(this, args)
                 }, limit)
             }

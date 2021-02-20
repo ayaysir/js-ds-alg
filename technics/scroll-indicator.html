@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Scroll Indicator</title>
+    <style>
+        
+        body {
+            margin: 0px;
+        }
+        
+        .header {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: fixed;
+            width: 100%;
+            text-align: center;
+            border-bottom: 1px solid gray;
+            background-color: whitesmoke;
+        }
+        
+        #scroll-indicator {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background-color: deepskyblue;
+            transform: translateX(-100%);
+        }
+        
+        #contents {
+            padding: 10px;
+            
+            padding-top: 80px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2>Lorem Ipsum</h2>
+        <div id="scroll-indicator"></div>
+    </div>
+    <div id="contents"></div>
+    <script>
+        
+        const scrollIndicator = document.getElementById("scroll-indicator")
+        const contents = document.getElementById("contents")
+        
+        fetch("https://baconipsum.com/api/?type=all-meat&paras=50&format=html")
+            .then(response => response.text())
+            .then(result => contents.innerHTML = result)
+            
+        window.addEventListener("scroll", e => {
+            // clientHeight : 웹 브라우저 창의 높이
+            // scrollTop : 현재 스크롤된 부분의 맨 위의 높이
+            // scrollHeight : 문서의 총 높이 (= 스크롤의 총 높이)
+            // contentHeight : 전체 총 높이에서 클라이언트 높이를 뺀 것
+            
+            const { scrollTop, scrollHeight, clientHeight } = e.target.scrollingElement
+            const contentHeight = scrollHeight - clientHeight
+            const percentage = (scrollTop / contentHeight) * 100
+            
+            scrollIndicator.style.transform = `translateX(-${100 - percentage}%)`   // -100% ~ 0%
+            scrollIndicator.style.transition = `transform 0.5 ease-out` // 부드러운 애니메이션
+        })
+    </script>
+</body>
+</html>
