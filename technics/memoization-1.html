@@ -1,0 +1,31 @@
+<!DOCTYPE html> <html> <head> </head>
+
+<body> <input type="text" id="itemId"> <button id="search">Search</button>
+    <script>
+        (async () => {
+            let inputItemId = document.getElementById("itemId");
+
+            async function searchItem(id) {
+                
+                if (sessionStorage.getItem(`search_${id}`)) {
+                    console.log("from cache", JSON.parse(sessionStorage.getItem(`search_${id}`)))
+                    return
+                }
+                try {
+                    const response = await fetch("https://reqres.in/api/users/" + id)
+                    const json = await response.json()
+                    sessionStorage.setItem(`search_${id}`, JSON.stringify(json.data))
+                    console.log(json.data)
+
+                } catch (err) {
+                    alert(err.message)
+                }
+            }
+//            searchItem.cache = {}
+            
+            document.getElementById("search").addEventListener("click", () => {
+                searchItem(inputItemId.value);
+            })
+        })();
+    </script>
+</body></html>

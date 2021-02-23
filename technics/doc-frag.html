@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="app"></div>
+    <script>
+        const $app = document.querySelector("#app")
+        const REPEAT_COUNT = 20000
+        
+        let startTime
+
+        if (confirm("확인 - DOM 직접접근 / 취소 - DOM 최소접근")) {
+            startTime = new Date().getTime()
+            for (let i = 0; i < REPEAT_COUNT; i++) {
+                $app.innerHTML += i + ", "
+            }
+        } else {
+            startTime = new Date().getTime()
+            let string = ""
+            for (let i = 0; i < REPEAT_COUNT; i++) {
+                string += i + ", "
+            }
+            $app.innerHTML = string
+        }
+
+        window.addEventListener("DOMContentLoaded", e => {
+            const endTime = new Date().getTime()
+            alert(endTime - startTime)
+        })
+    </script>
+</body></html>
