@@ -21,11 +21,12 @@
                     alert(err.message)
                 }
             }
-//            searchItem.cache = {}
             
             document.getElementById("search").addEventListener("click", () => {
                 searchItem(inputItemId.value);
             })
         })();
+        
+        // (async () => { let inputItemId = document.getElementById("itemId") // input[type=text] 요소 async function searchItem(id) { if (searchItem.cache.hasOwnProperty(id)) { console.log("from cache", searchItem.cache[id]) return } try { const response = await fetch("https://reqres.in/api/users/" + id) const json = await response.json() searchItem.cache[json.data.id] = json.data console.log(searchItem.cache[id]) } catch (err) { alert(err.message) } } searchItem.cache = {} // #search: button 요소 document.getElementById("search").addEventListener("click", () => { searchItem(inputItemId.value); }) })();
     </script>
 </body></html>

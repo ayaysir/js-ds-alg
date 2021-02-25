@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Show User</title>
+    <style>
+        .loading {
+            display: none; 
+            width: 100%; 
+            height: 100%; 
+            justify-content: center; 
+            flex-direction: column; 
+            align-items: center;
+            position: absolute;
+            left: 0;
+            top: 0;
+            background-color: rgba(0, 0, 0, 0.1)
+        }
+        
+        .container {
+            display: none;
+        }
+        
+        .profile {
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="loading">loading...</div>
+    <div class="container">
+        <h3 class="id"></h3>
+        <img src="" class="profile" alt="">
+        <ul>
+            <li>email: <a href="mailto:" class="email"></a></li>
+            <li>name: <span class="fullname"></span></li>
+        </ul>
+        <button class="btn-prev">PREV</button>
+        <button class="btn-next">NEXT</button>
+    </div>
+
+
+    <script>    
+        function $(selector) {
+            return document.querySelector(selector)
+        }
+        console.log(window.location)
+        
+        const id = $(".id")
+        const profile = $(".profile")
+        const email = $(".email")
+        const fullname = $(".fullname")
+        const loading = $(".loading")
+        const container = $(".container")
+
+        // URL로 주소 입력하기
+        let [, service, value] = window.location.pathname.split("/")
+        if (service === "user") {
+            fetchUser(value)
+        }
+
+        function setURL(value) {
+            history.pushState(null, "", value)
+            fetchUser(value)
+        }
+
+        async function fetchUser(userId) {
+            loading.style.display = "flex"
+            
+            try {
+                const response = await fetch(`https://reqres.in/api/users/${userId}?delay=1`)
+                const json = await response.json()
+                const data = json.data
+                loading.style.display = "none"
+                container.style.display = "block"
+                
+                profile.src = data.avatar
+                email.textContent = data.email
+                email.setAttribute("href", `mailto:${data.email}`)
+                fullname.textContent = `${data.first_name} ${data.last_name}`
+                id.textContent = `${data.id}. ${data.first_name} ${data.last_name}`
+            } catch(err) {
+                alert("오류가 발생했습니다.")
+                value = 1
+                setURL(value)
+            }        
+                
+        }
+
+
+        const btnNext = $(".btn-next")
+        const btnPrev = $(".btn-prev")
+        btnNext.addEventListener("click", e => {
+            value = Number(value) + 1
+            setURL(value)
+
+        })
+        btnPrev.addEventListener("click", e => {
+            value = Number(value) - 1
+            setURL(value)
+        })
+
+    </script>
+</body>
+
+</html>

@@ -37,10 +37,10 @@ export default class Component {
     
     addEvent(eventType, selector, callback) {
         const children = [...this.$target.querySelectorAll(selector)]
-        const checkTarget = (target) => children.includes(target) || target.closest(selector)
+        const isTarget = (target) => children.includes(target) || !!target.closest(selector)
 
         this.$target.addEventListener(eventType, e => {
-            if(!checkTarget(event.target)) return false
+            if(!isTarget(event.target)) return false
             callback(e)
         })
     }

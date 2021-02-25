@@ -48,34 +48,34 @@ export default class App extends Component {
         return items.filter(({ active }) => (isFilter === 1 && active) || (isFilter === 2 && !active) || isFilter === 0)
     }
     
-        addItem(contents) {
-            const { items } = this.$state
-            const seq = Math.max(0, ...items.map(v => v.seq)) + 1
-            const active = false
-            this.setState({
-                items: [
-                    ...items,
-                    { seq, contents, active }
-                ]
-            })
-        }
-        
-        deleteItem(seq) {
-            const { items } = this.$state
-            items.splice(items.findIndex(v => v.seq === seq), 1)
-            this.setState({ items })
-        }
-        
-        toggleItem(seq) {
-            const { items } = this.$state
-            const index = items.findIndex(v => v.seq === seq)
-            items[index].active = !items[index].active
-            this.setState({ items })
-        }
-        
-        filterItem(isFilter) {
-            this.setState({ isFilter })
-        }
+    addItem(contents) {
+        const { items } = this.$state
+        const seq = Math.max(0, ...items.map(v => v.seq)) + 1
+        const active = false
+        this.setState({
+            items: [
+                ...items,
+                { seq, contents, active }
+            ]
+        })
+    }
+
+    deleteItem(seq) {
+        const { items } = this.$state
+        items.splice(items.findIndex(v => v.seq === seq), 1)
+        this.setState({ items })
+    }
+
+    toggleItem(seq) {
+        const { items } = this.$state
+        const index = items.findIndex(v => v.seq === seq)
+        items[index].active = !items[index].active
+        this.setState({ items })
+    }
+
+    filterItem(isFilter) {
+        this.setState({ isFilter })
+    }
     
 }
 
