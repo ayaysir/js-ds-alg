@@ -1,3 +1,5 @@
+import DOMHandler, { stringToHTML } from "./DOMHandler.js"
+
 export default class Component {
 
     $target

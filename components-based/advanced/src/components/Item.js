@@ -4,7 +4,7 @@ export default class Item extends Component {
     
     template() {
         const { filteredItems } = this.$props
-        return "<ul>" + filteredItems.map(({ contents, active, seq }) => `
+        return `<ul>${filteredItems.map(({ contents, active, seq }) => `
             <li data-seq="${seq}">
                 ${contents}
                 <button class="toggle-btn" style="color: ${active ? '#09F' : '#F09'}">
@@ -12,7 +12,7 @@ export default class Item extends Component {
                 </button>
                 <button class="delete-btn">삭제</button>
             </li>
-        `).join("") + "</ul>"
+        `).join("")}</ul>`
     }
     
     setEvent() {
@@ -21,7 +21,7 @@ export default class Item extends Component {
             deleteItem(Number(target.closest(`[data-seq]`).dataset.seq))
         }) 
         this.addEvent("click", ".toggle-btn", ({ target }) => {
-            toggleItem(Number(target.closest(`[data-seq]`).dataset.seq))
+            toggleItem(Number(target.closest(`[data-seq]`).dataset.seq), document.querySelector(".appender").value)
         }) 
     }
     

@@ -8,11 +8,12 @@ export default class App extends Component {
         // 상태를 최상위 컴포넌트에서 관리하는 것이 좋다.
         this.$state = {
             filterCategory: 0,
+            inputItemName: "",
             items: [{
                 seq: 1, contents: 'item1', active: false
             }, {
                 seq: 2, contents: 'item2', active: true
-            }]
+            }],
         }
     }
     
@@ -32,12 +33,13 @@ export default class App extends Component {
         
         // $target, $props
         new ItemAppender($itemAppender, {
-            addItem: addItem.bind(this)
+            inputItemName: this.$state.inputItemName,
+            addItem: addItem.bind(this),
         })
         new Item($items, {
             filteredItems,
             deleteItem: deleteItem.bind(this),
-            toggleItem: toggleItem.bind(this)
+            toggleItem: toggleItem.bind(this),
         })
         new ItemFilter($itemFilter, {
             filterItem: filterItem.bind(this)
@@ -68,16 +70,17 @@ export default class App extends Component {
         this.setState({ items })
     }
 
-    toggleItem(seq) {
+    toggleItem(seq, inputItemName) {
         const { items } = this.$state
         const index = items.findIndex(item => item.seq === seq)
         items[index].active = !items[index].active
-        this.setState({ items })
+        this.setState({ items, inputItemName })
     }
 
     filterItem(filterCategory) {
         this.setState({ filterCategory })
     }
+    
     
 }
 
