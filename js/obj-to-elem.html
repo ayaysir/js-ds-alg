@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        /*
+        *
+
+        */
+
+
+        class ObjectToHTML {
+            static toElement(object) {
+                const element = document.createElement(object.tag)
+                element.textContent = object.content
+                for(let key in object.attr) {
+                    element.setAttribute(this.kebabize(key), object.attr[key])
+                }
+                for(let key in object.event) {
+                    element.addEventListener(key, object.event(key))
+                }
+                element.style.cssText = object.cssText
+                console.log(this.camelize("data-status"), this.kebabize("dataStatus"))
+                return element
+            }
+
+            static camelize(str) {
+                let arr = str.split('-');
+                let capital = arr.map((item, index) => index ? item.charAt(0).toUpperCase() + item.slice(1).toLowerCase() : item.toLowerCase());
+                // ^-- change here.
+                let capitalString = capital.join("");
+
+                return capitalString
+            }
+
+            static kebabize(str) {
+                return str.split('').map((letter, idx) => {
+                    return letter.toUpperCase() === letter ?
+                        `${idx !== 0 ? '-' : ''}${letter.toLowerCase()}` :
+                        letter;
+                }).join('');
+            }
+
+            static runExample() {
+                const sampleObject = {
+                    tag: 'a', //type of html object
+                    content: 'blabal', //inner textContent
+                    attr: { // attributes(key name must be camelCase)
+                        href: 'vk.com',
+                        id: 'someId',
+                        dataStatus: 'acb',
+                    },
+                    events: {
+                        click: function(e) {
+                            console.log(e.target)
+                            alert("click")
+                        },
+                    },
+                    cssText: "width: 100%;",
+                }
+                const testEl = ObjectToHTML.toElement(sampleObject)
+                console.log(testEl)
+                console.dir(testEl)
+                document.querySelector("body").appendChild(testEl)
+            }
+        }
+        
+        ObjectToHTML.runExample()
+    </script>
+</body></html>

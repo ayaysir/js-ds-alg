@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+
+<body>
+    <form method="get" action="example">
+        <input type="radio" value="1" name="score"> 1
+        <input type="radio" value="2" name="score"> 2
+        <input type="radio" value="3" name="score" checked> 3
+        <input type="radio" value="4" name="score"> 4
+        <input type="radio" value="5" name="score"> 5
+        <button type="reset">reset</button>
+        <button>submit</button>
+    </form>
+
+
+    <button id="btn-radio">알아내기</button>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
+    <script>
+        $("#btn-radio").on("click", function() {
+            //           alert( $("input[name='score']:checked").val() )
+            //            var checkedScore = document.querySelector("input[name='score']:checked")
+            //            alert(checkedScore.value)
+
+            var scores = document.getElementsByName("score")
+            scores.forEach((node) => {
+                if (node.checked) {
+                    alert(node.value)
+                    return
+                }
+            })
+
+        })
+        
+        var getMousePos_arrow = () => {
+            console.log(this)
+        }
+        
+        var getMousePos_func = function() {
+            console.log(this)
+        }
+        document.addEventListener("click", getMousePos_arrow.bind(this))
+        document.addEventListener("contextmenu", getMousePos_func)
+    </script>
+</body></html>

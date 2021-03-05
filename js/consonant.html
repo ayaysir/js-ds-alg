@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        // 0xAC00 : 44032
+        // 초성 = ((X - 0xAC00) / 28) / 21
+        // 중성 = ((X - 0xAC00) / 28) % 21
+        // 종성 = (X - 0xAC00) % 28
+    
+        
+        // 맨 마지막 글자에 받침이 있는지 찾아서 있다면 true, 없다면 false 를 반환
+        function isEndWithConsonant(korStr) {
+            const finalChrCode = korStr.charCodeAt(korStr.length - 1)
+            // 0 = 받침 없음, 그 외 = 받침 있음
+            const finalConsonantCode = (finalChrCode - 44032) % 28
+            return finalConsonantCode !== 0
+        };
+        
+        // 을/를 덧붙히기
+        String.prototype.appendIga = function appendIGa() {
+            return this + (isEndWithConsonant(this) ? "이" : "가")
+        };
+        
+        // 을/를 덧붙히기
+        String.prototype.appendEulReul = function appendEulReul(korStr) {
+            return this + (isEndWithConsonant(this) ? "을" : "를")
+        };
+        
+        ["물약", "단검", "뼈", "모래", "흙", "육류"].forEach(el => {
+            console.log(`마을 상점에서 ${el.appendEulReul()} 구입하세요.`)
+        });
+        
+    </script>
+</body>
+</html>
