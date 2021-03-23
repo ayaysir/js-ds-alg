@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Load lazy image by scroll-height</title>
+    <style>
+        .img-box {
+            height: 500px;
+            border: 1px solid black;
+        }
+
+        .img-box img {
+            height: 500px;
+        }
+    </style>
+</head>
+
+<body>
+<!--    초기 화면에 들어오는 이미지는 not lazy, 화면 밖에 있는 이미지는 lazy-->
+    <div class="img-box">
+        <img src="./img/1%20Chrysanthemum.jpg">
+    </div>
+    <div class="img-box">
+        <img src="./img/2%20Desert.jpg">
+    </div>
+    <div class="img-box lazy">
+        <img data-src="./img/3%20Hydrangeas.jpg">
+    </div>
+    <div class="img-box lazy">
+        <img data-src="./img/4%20Jellyfish.jpg">
+    </div>
+    <div class="img-box lazy">
+        <img data-src="./img/5%20Koala.jpg">
+    </div>
+    <div class="img-box lazy">
+        <img data-src="./img/6%20Lighthouse.jpg">
+    </div>
+    <div class="img-box lazy">
+        <img data-src="./img/7%20Penguins.jpg">
+    </div>
+    <div class="img-box lazy">
+        <img data-src="./img/8%20Tulips.jpg">
+    </div>
+
+    <script>
+        function debounce(callback, limit = 100) {
+            let timeout
+            return function(...args) {
+                clearTimeout(timeout)
+                timeout = setTimeout(() => {
+                    callback.apply(this, args)
+                }, limit)
+            }
+        }
+
+        const imgBoxes = document.querySelectorAll(".img-box.lazy")
+
+        const loadLazyImg = debounce(e => {
+
+            // clientHeight : 웹 브라우저 창의 높이
+            // scrollTop : 현재 스크롤된 부분의 맨 위의 높이
+            // scrollHeight : 문서의 총 높이 (= 스크롤의 총 높이)
+            // (이미지 lazy) 해당 이미지가 현재 스크롤 화면에 들어옴 : clientHeight + scrollTop >= box.offsetTop
+            // (참고: 무한스크롤) 스크롤의 마지막에 도달 : clientHeight + scrollTop >= scrollHeight
+            // window.innerHeight = clientHeight
+
+            const {
+                clientHeight,
+                scrollTop,
+                scrollHeight
+            } = e.target.scrollingElement
+
+
+            imgBoxes.forEach(box => {
+                if (box.offsetTop < clientHeight + scrollTop) {
+                    const $img = box.querySelector("img")
+                    $img.src = $img.dataset.src
+                    $img.classList.remove("lazy")
+                }
+            })
+
+        }, 200)
+
+
+        // ===== 이미지 로딩 =====
+        document.addEventListener("scroll", loadLazyImg)
+    </script>
+</body></html>
