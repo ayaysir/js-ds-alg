@@ -16,30 +16,41 @@
 </head>
 
 <body>
-<!--    초기 화면에 들어오는 이미지는 not lazy, 화면 밖에 있는 이미지는 lazy-->
+    <!--
+<a href="https://ibb.co/52Gttj4"><img src="" alt="1-Chrysanthemum" border="0"></a>
+<a href="https://ibb.co/z6v95sZ"><img src="https://i.ibb.co/MB0whn7/2-Desert.jpg" alt="2-Desert" border="0"></a>
+<a href="https://ibb.co/5KXbYcb"><img src="https://i.ibb.co/jJ9nV4n/3-Hydrangeas.jpg" alt="3-Hydrangeas" border="0"></a>
+<a href="https://ibb.co/GJ5zrNL"><img src="https://i.ibb.co/QcKyxtR/4-Jellyfish.jpg" alt="4-Jellyfish" border="0"></a>
+<a href="https://ibb.co/p3RQBgV"><img src="https://i.ibb.co/D78YHNc/5-Koala.jpg" alt="5-Koala" border="0"></a>
+<a href="https://ibb.co/z21wmwC"><img src="https://i.ibb.co/HP0QKQR/6-Lighthouse.jpg" alt="6-Lighthouse" border="0"></a>
+<a href="https://ibb.co/XkhM0np"><img src="https://i.ibb.co/6J3L9Kb/7-Penguins.jpg" alt="7-Penguins" border="0"></a>
+<a href="https://ibb.co/jJZdCX0"><img src="https://i.ibb.co/Rj41Xwr/8-Tulips.jpg" alt="8-Tulips" border="0"></a>
+-->
+
+    <!--    초기 화면에 들어오는 이미지는 not lazy, 화면 밖에 있는 이미지는 lazy-->
     <div class="img-box">
-        <img src="./img/1%20Chrysanthemum.jpg">
+        <img src="https://i.ibb.co/N7tQQNC/1-Chrysanthemum.jpg">
     </div>
     <div class="img-box">
-        <img src="./img/2%20Desert.jpg">
+        <img src="https://i.ibb.co/MB0whn7/2-Desert.jpg">
     </div>
     <div class="img-box lazy">
-        <img data-src="./img/3%20Hydrangeas.jpg">
+        <img data-src="https://i.ibb.co/jJ9nV4n/3-Hydrangeas.jpg">
     </div>
     <div class="img-box lazy">
-        <img data-src="./img/4%20Jellyfish.jpg">
+        <img data-src="https://i.ibb.co/QcKyxtR/4-Jellyfish.jpg">
     </div>
     <div class="img-box lazy">
-        <img data-src="./img/5%20Koala.jpg">
+        <img data-src="https://i.ibb.co/D78YHNc/5-Koala.jpg">
     </div>
     <div class="img-box lazy">
-        <img data-src="./img/6%20Lighthouse.jpg">
+        <img data-src="https://i.ibb.co/HP0QKQR/6-Lighthouse.jpg">
     </div>
     <div class="img-box lazy">
-        <img data-src="./img/7%20Penguins.jpg">
+        <img data-src="https://i.ibb.co/6J3L9Kb/7-Penguins.jpg">
     </div>
     <div class="img-box lazy">
-        <img data-src="./img/8%20Tulips.jpg">
+        <img data-src="https://i.ibb.co/Rj41Xwr/8-Tulips.jpg">
     </div>
 
     <script>
@@ -84,5 +95,7 @@
 
         // ===== 이미지 로딩 =====
         document.addEventListener("scroll", loadLazyImg)
+
+        // 출처: https://velog.io/@boh001/Infinity-Scrolling
     </script>
 </body></html>
